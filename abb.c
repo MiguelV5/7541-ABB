@@ -1,24 +1,82 @@
 #include "abb.h"
+#include <stdio.h>
+#include <stdbool.h>
 
-
-
+#define FALLO -1
 
 
 
 abb_t* arbol_crear(abb_comparador comparador, abb_liberar_elemento destructor){
 
+    if(!comparador){
+        return NULL;
+    }
 
-    return 0;
+    abb_t* abb = malloc(1*sizeof(abb_t));
+    abb->comparador = comparador;
+    abb->destructor = destructor;
+    abb->nodo_raiz = NULL;
+
+    return abb;
 
 }
 
+/**
+ * Inserta un nodo nuevo con el elemento requerido a un arbol usando el comparador como
+ * criterio para posicionarlo donde corresponde. 
+ * Tiene comportamiento recursivo, por lo que puede devolver:
+ *  -NULL en caso de falla al reservar el nodo nuevo.
+ *  -El nodo del arbol sobre el cual se encuentra actualmente posicionado.
+ * Debido a éste último, al finalizar TODOS los retornos recursivos se devuelve la raíz del abb. 
+*/
+nodo_abb_t* insercion_de_nodo(nodo_abb_t* nodo_actual, abb_comparador comparador, void* elemento){
 
+    if(nodo_actual == NULL){
 
+        nodo_actual = calloc(1, sizeof(nodo_abb_t));
+        if(!nodo_actual){
+            return NULL;
+        }
+
+        nodo_actual->elemento = elemento;
+        return nodo_actual;
+
+    }
+
+    int comparacion_de_elementos = comparador(elemento, nodo_actual->elemento);
+
+    //Convención tomada: Si el elemento a insertar es repetido, se inserta a la izquierda del mismo.
+    if(comparacion_de_elementos <= 0){ 
+
+        nodo_actual->izquierda = insercion_de_nodo(nodo_actual->izquierda, comparador, elemento);
+    
+    }
+    else if(comparacion_de_elementos > 0){
+
+        nodo_actual->derecha = insercion_de_nodo(nodo_actual->derecha, comparador, elemento);
+
+    }
+
+    return nodo_actual;
+
+}
 
 int arbol_insertar(abb_t* arbol, void* elemento){
 
+    if(!arbol){
+        printf("\n\tFallo: No se puede insertar en un arbol inexistente.\n");
+        return FALLO;
+    }
 
-    return 0;
+    nodo_abb_t* nodo_fue_insertado = insercion_de_nodo(arbol->nodo_raiz , arbol->comparador, elemento);
+
+    if(nodo_fue_insertado != NULL){
+        arbol->nodo_raiz = nodo_fue_insertado;
+        return 0;
+    }
+    else{
+        return FALLO;
+    }
 
 }
 
@@ -38,7 +96,7 @@ int arbol_borrar(abb_t* arbol, void* elemento){
 void* arbol_buscar(abb_t* arbol, void* elemento){
 
 
-    return 0;
+    return NULL;
 
 }
 
@@ -48,7 +106,7 @@ void* arbol_buscar(abb_t* arbol, void* elemento){
 void* arbol_raiz(abb_t* arbol){
 
 
-    return 0;
+    return NULL;
 
 }
 
@@ -58,7 +116,7 @@ void* arbol_raiz(abb_t* arbol){
 bool arbol_vacio(abb_t* arbol){
 
 
-    return 0;
+    return false;
 
 }
 
@@ -95,9 +153,37 @@ size_t arbol_recorrido_postorden(abb_t* arbol, void** array, size_t tamanio_arra
 
 
 
+/**
+ * Libera todos los nodos de un arbol. En caso de tener destructor, destruye
+ * a su vez a cada elemento.
+*/
+void destruir_nodos(nodo_abb_t* nodo_actual, abb_liberar_elemento destructor){
+
+    if(!nodo_actual){
+        return;
+    }
+    else if(nodo_actual != NULL){
+        destruir_nodos(nodo_actual->izquierda, destructor);
+        destruir_nodos(nodo_actual->derecha, destructor);
+    }
+
+    if(destructor != NULL){
+        destructor(nodo_actual->elemento);
+    }
+    free(nodo_actual);
+
+}
+
+
 void arbol_destruir(abb_t* arbol){
 
+    if(!arbol){
+        printf("\n\tFallo: No existe el arbol a destruir.\n");
+        return;
+    }
 
+    destruir_nodos(arbol->nodo_raiz, arbol->destructor);
+    free(arbol);
 
 }
 
