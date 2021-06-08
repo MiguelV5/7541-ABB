@@ -8,6 +8,12 @@
 #define FALLO -1
 
 
+
+//Por comodidad de lectura, "encapsulo" las funciones auxiliares de las pruebas usando entre separadores del tipo:  "// ======== // ======== //"
+
+// ========================================================= // ========================================================= //
+
+
 /**
  * Destructor auxiliar de prueba.
  * Hace free del elemento recibido.
@@ -32,107 +38,6 @@ int comparador_de_enteros(void* elemento_1 , void* elemento_2){
   return ((*entero_1) - (*entero_2));
 
 }
-
-
-
-// CREACIÓN
-
-
-void DadoComparadorNull_SiSePideCrear_NoSeCreaYSeRetornaNull(){
-
-  abb_t* abb = arbol_crear(NULL, destructor_de_prueba);
-  pa2m_afirmar( abb == NULL , "No se puede crear un arbol sin comparador");
-  
-  printf("\n");
-
-}
-
-
-
-void DadoComparadorValido_SiSePideCrearConOSinDestructor_SeCreaCorrectamenteAbb(){
-  
-  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
-  pa2m_afirmar( abb != NULL , "Se crea correctamente un arbol con comparador, pero sin destructor.");
-  pa2m_afirmar( abb->nodo_raiz == NULL , "El arbol creado no tiene elementos.")
-  arbol_destruir(abb);
-
-  abb = arbol_crear(comparador_de_enteros, destructor_de_prueba);
-  pa2m_afirmar( abb != NULL , "Se crea correctamente un arbol con comparador y con destructor.");
-  pa2m_afirmar( abb->nodo_raiz == NULL , "El arbol creado no tiene elementos.")
-  arbol_destruir(abb);
-  
-  printf("\n");
-
-}
-
-
-
-
-
-// INSERCIÓN
-
-
-void DadoAbbInexistente_SiSeIntentaInsertarElemento_NoSePuedeInsertar(){
-
-  int uno = 1; //Elemento de prueba
-
-  pa2m_afirmar( arbol_insertar(NULL , &uno) == FALLO , "No se puede insertar en un arbol inexistente.");
-
-  printf("\n");
-
-}
-
-
-
-
-
-void DadoAbbSinElementos_SiSeInsertaUnElemento_SeInsertaCorrectamenteYElementoInsertadoEsRaiz(){
-
-  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
-
-  int uno = 1; //Elemento de prueba
-
-  pa2m_afirmar( arbol_insertar(abb, &uno) == 0 , "Se insertó un elemento a un abb sin elementos.");
-  pa2m_afirmar( *(int*)(abb->nodo_raiz->elemento) == uno , "El elemento insertado es el requerido y es ahora la raíz del arbol.");
-  arbol_destruir(abb);
-
-  printf("\n");
-
-}
-
-
-
-
-
-
-/**
- * Función auxiliar de uso limitado a prueba de inserción.
- * Devuelve:
- *  -true si todos los elementos insertados estan en la posición del arbol que
- * les corresponde, y si los hijos de las hojas son NULL.
- *  -false en caso de que no se cumpla alguno de los anteriores.
-*/
-bool verificacion_sub_arboles(nodo_abb_t* raiz){
-
-  //Nuevamente se cita la visualización del README.txt
-  //Se guardan los nodos de los enteros con los nombres de los numeros que les deberían corresponder tras la inserción:
-  nodo_abb_t* tres = raiz->izquierda;
-  nodo_abb_t* uno = raiz->izquierda->izquierda;
-  nodo_abb_t* cero = raiz->izquierda->izquierda->izquierda;
-  nodo_abb_t* dos = raiz->izquierda->izquierda->derecha;
-  nodo_abb_t* cuatro = raiz->izquierda->derecha;
-  nodo_abb_t* cinco_repetido = raiz->izquierda->derecha->derecha; //El elemento de la raíz ya se revisó anteriormente. Este cinco es el que está a la derecha del 4.
-  nodo_abb_t* siete = raiz->derecha;
-  nodo_abb_t* seis = raiz->derecha->izquierda;
-  nodo_abb_t* ocho = raiz->derecha->derecha;
-  nodo_abb_t* nueve = raiz->derecha->derecha->derecha;
-
-  bool resultado = (    (*(int*)(tres->elemento) == 3)  &&  (*(int*)(uno->elemento) == 1)  &&  (*(int*)(cero->elemento) == 0)  &&  (cero->izquierda == NULL)  &&  (cero->derecha == NULL)  &&  (*(int*)(dos->elemento) == 2)  &&  (dos->izquierda == NULL)  &&  (dos->derecha == NULL)  &&  (*(int*)(cuatro->elemento) == 4)  &&  (*(int*)(cinco_repetido->elemento) == 5)  &&  (cinco_repetido->izquierda == NULL)  &&  (cinco_repetido->derecha == NULL)  &&  (*(int*)(siete->elemento) == 7)  &&  (*(int*)(seis->elemento) == 6)  &&  (seis->izquierda == NULL)  &&  (seis->derecha == NULL)  &&  (*(int*)(ocho->elemento) == 8)  &&  (*(int*)(nueve->elemento) == 9) && (nueve->izquierda == NULL) && (nueve->derecha == NULL)    );
-
- return resultado;
-
-}
-
 
 
 /**
@@ -262,57 +167,57 @@ abb_t* crear_abb_generico(bool* todos_se_insertaron){
   //Orden de inserción en el arbol: 5,3,7,6,8,9,4,1,2,0,5.
 
   int se_inserto_actual = arbol_insertar(abb, cinco);
-  if(se_inserto_actual == FALLO){
+  if((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL)){
     (*todos_se_insertaron) = false;
   }
 
   se_inserto_actual = arbol_insertar(abb, tres);
-  if(se_inserto_actual == FALLO){
+  if(((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL))){
     (*todos_se_insertaron) = false;
   }
 
   se_inserto_actual = arbol_insertar(abb, siete);
-  if(se_inserto_actual == FALLO){
+  if(((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL))){
     (*todos_se_insertaron) = false;
   }
 
   se_inserto_actual = arbol_insertar(abb, seis);
-  if(se_inserto_actual == FALLO){
+  if(((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL))){
     (*todos_se_insertaron) = false;
   }
 
   se_inserto_actual = arbol_insertar(abb, ocho);
-  if(se_inserto_actual == FALLO){
+  if(((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL))){
     (*todos_se_insertaron) = false;
   }
 
   se_inserto_actual = arbol_insertar(abb, nueve);
-  if(se_inserto_actual == FALLO){
+  if(((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL))){
     (*todos_se_insertaron) = false;
   }
 
   se_inserto_actual = arbol_insertar(abb, cuatro);
-  if(se_inserto_actual == FALLO){
+  if(((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL))){
     (*todos_se_insertaron) = false;
   }
 
   se_inserto_actual = arbol_insertar(abb, uno);
-  if(se_inserto_actual == FALLO){
+  if(((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL))){
     (*todos_se_insertaron) = false;
   }
 
   se_inserto_actual = arbol_insertar(abb, dos);
-  if(se_inserto_actual == FALLO){
+  if(((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL))){
     (*todos_se_insertaron) = false;
   }
 
   se_inserto_actual = arbol_insertar(abb, cero);
-  if(se_inserto_actual == FALLO){
+  if(((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL))){
     (*todos_se_insertaron) = false;
   }
 
   se_inserto_actual = arbol_insertar(abb, cinco_repetido);
-  if(se_inserto_actual == FALLO){
+  if(((se_inserto_actual == FALLO) && (todos_se_insertaron != NULL))){
     (*todos_se_insertaron) = false;
   }
 
@@ -320,8 +225,118 @@ abb_t* crear_abb_generico(bool* todos_se_insertaron){
 
 }
 
+// ========================================================= // ========================================================= //
 
-void DadoAbbSinElementos_SiSeInsertanVariosElementos_SeInsertanTodosYEnDondeCorresponde(){
+
+
+
+
+// CREACIÓN
+
+
+void DadoComparadorNull_SiSePideCrear_NoSeCreaYSeRetornaNull(){
+
+  abb_t* abb = arbol_crear(NULL, destructor_de_prueba);
+  pa2m_afirmar( abb == NULL , "No se puede crear un arbol sin comparador");
+  
+  printf("\n");
+
+}
+
+
+
+void DadoComparadorValido_SiSePideCrearConOSinDestructor_SeCreaCorrectamenteAbb(){
+  
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+  pa2m_afirmar( abb != NULL , "Se crea correctamente un arbol con comparador, pero sin destructor.");
+  pa2m_afirmar( abb->nodo_raiz == NULL , "El arbol creado no tiene elementos.")
+  arbol_destruir(abb);
+
+  abb = arbol_crear(comparador_de_enteros, destructor_de_prueba);
+  pa2m_afirmar( abb != NULL , "Se crea correctamente un arbol con comparador y con destructor.");
+  pa2m_afirmar( abb->nodo_raiz == NULL , "El arbol creado no tiene elementos.")
+  arbol_destruir(abb);
+  
+  printf("\n");
+
+}
+
+
+
+
+
+// INSERCIÓN
+
+
+void DadoAbbInexistente_SiSeIntentaInsertarElemento_NoSePuedeInsertar(){
+
+  int uno = 1; //Elemento de prueba
+
+  pa2m_afirmar( arbol_insertar(NULL , &uno) == FALLO , "No se puede insertar en un arbol inexistente.");
+
+  printf("\n");
+
+}
+
+
+
+
+
+void DadoAbbSinElementos_SiSeInsertaUnElemento_SeInsertaCorrectamenteYElementoInsertadoEsRaiz(){
+
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+
+  int uno = 1; //Elemento de prueba
+
+  pa2m_afirmar( arbol_insertar(abb, &uno) == 0 , "Se insertó un elemento a un abb sin elementos.");
+  pa2m_afirmar( *(int*)(abb->nodo_raiz->elemento) == uno , "El elemento insertado es el requerido y es ahora la raíz del arbol.");
+  arbol_destruir(abb);
+
+  printf("\n");
+
+}
+
+
+
+
+// ========================================================= // ========================================================= //
+
+
+/**
+ * Función auxiliar de uso limitado a prueba de inserción.
+ * Devuelve:
+ *  -true si todos los elementos insertados estan en la posición del arbol que
+ * les corresponde, y si los hijos de las hojas son NULL.
+ *  -false en caso de que no se cumpla alguno de los anteriores.
+*/
+bool verificacion_sub_arboles(nodo_abb_t* raiz){
+
+  //Nuevamente se cita la visualización del README.txt
+  //Se guardan los nodos de los enteros con los nombres de los numeros que les deberían corresponder tras la inserción:
+  nodo_abb_t* tres = raiz->izquierda;
+  nodo_abb_t* uno = raiz->izquierda->izquierda;
+  nodo_abb_t* cero = raiz->izquierda->izquierda->izquierda;
+  nodo_abb_t* dos = raiz->izquierda->izquierda->derecha;
+  nodo_abb_t* cuatro = raiz->izquierda->derecha;
+  nodo_abb_t* cinco_repetido = raiz->izquierda->derecha->derecha; //El elemento de la raíz ya se revisó anteriormente. Este cinco es el que está a la derecha del 4.
+  nodo_abb_t* siete = raiz->derecha;
+  nodo_abb_t* seis = raiz->derecha->izquierda;
+  nodo_abb_t* ocho = raiz->derecha->derecha;
+  nodo_abb_t* nueve = raiz->derecha->derecha->derecha;
+
+  bool resultado = (    (*(int*)(tres->elemento) == 3)  &&  (*(int*)(uno->elemento) == 1)  &&  (*(int*)(cero->elemento) == 0)  &&  (cero->izquierda == NULL)  &&  (cero->derecha == NULL)  &&  (*(int*)(dos->elemento) == 2)  &&  (dos->izquierda == NULL)  &&  (dos->derecha == NULL)  &&  (*(int*)(cuatro->elemento) == 4)  &&  (*(int*)(cinco_repetido->elemento) == 5)  &&  (cinco_repetido->izquierda == NULL)  &&  (cinco_repetido->derecha == NULL)  &&  (*(int*)(siete->elemento) == 7)  &&  (*(int*)(seis->elemento) == 6)  &&  (seis->izquierda == NULL)  &&  (seis->derecha == NULL)  &&  (*(int*)(ocho->elemento) == 8)  &&  (*(int*)(nueve->elemento) == 9) && (nueve->izquierda == NULL) && (nueve->derecha == NULL)    );
+
+ return resultado;
+
+}
+
+// ========================================================= // ========================================================= //
+
+
+
+
+
+void DadoAbbSinElementos_SiSeInsertanVariosElementos_SeInsertanTodosYComoCorresponde(){
 
   //IMPORTANTE VER ilustración del resultado deseado en README.txt, sección Aclaraciones.
   //Allí se encuentra explicación de lo siguiente.
@@ -347,120 +362,202 @@ void DadoAbbSinElementos_SiSeInsertanVariosElementos_SeInsertanTodosYEnDondeCorr
 }
 
 
+
+
+
+// FUNCIONES DE UTILIDAD
+
+
+void DadoAbbSinElementosOInexistente_SiSePreguntaSiEstaVacio_SeDevuelveTrue(){
+  
+  pa2m_afirmar( arbol_vacio(NULL) == true , "Un arbol inexistente es vacío.");
+
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+  pa2m_afirmar( arbol_vacio(abb) == true , "Un arbol existente sin elementos es vacío.");
+  
+  arbol_destruir(abb);
+  printf("\n");
+
+}
+
+
+void DadoAbbConUnElemento_SiSePreguntaSiEstaVacio_SeDevuelveFalse(){
+
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+  //No veo necesario usar el arbol genérico para esta prueba.
+
+  int uno = 1 , dos = 2 ; //Elementos de prueba
+  arbol_insertar(abb, &uno);
+  pa2m_afirmar( arbol_vacio(abb) == false , "Un arbol con un elemento no es vacío.");
+
+  arbol_insertar(abb, &dos);
+  pa2m_afirmar( arbol_vacio(abb) == false , "Un arbol con más de un elemento no es vacío.");
+
+  arbol_destruir(abb);
+
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbVacio_SiSePideElementoRaiz_SeDevuelveNull(){
+
+  void* elemento_raiz = arbol_raiz(NULL);
+  pa2m_afirmar( elemento_raiz == NULL , "No se puede obtener elemento raiz de un arbol inexistente.");
+
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+  elemento_raiz = arbol_raiz(abb);
+  pa2m_afirmar( elemento_raiz == NULL , "No se puede obtener elemento raíz de un arbol sin elementos.");
+
+  arbol_destruir(abb);
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbConElementos_SiSePideElementoRaiz_SeDevuelveEseElementoCorrectamente(){
+
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+  //No veo necesario usar el arbol genérico para esta prueba.
+
+  int uno = 1 , dos = 2 ; //Elementos de prueba
+  arbol_insertar(abb, &uno);
+  arbol_insertar(abb, &dos);
+
+  pa2m_afirmar( *(int*)arbol_raiz(abb) == 1 , "Al pedir elemento raíz de arbol con varios elementos, se devuelve el adecuado.");
+
+  arbol_destruir(abb);
+
+  printf("\n");
+
+}
+
+
+
+
+// BUSQUEDA
+
+void DadoAbbVacio_SiSePideBuscarUnElemento_SeDevuelveNull(){
+
+  int uno = 1; //Elemento de prueba
+
+  pa2m_afirmar( arbol_buscar(NULL, &uno) == NULL , "Si se pide buscar elemento de arbol inexistente, se devuelve NULL.");
+
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+
+  pa2m_afirmar( arbol_buscar(abb, &uno) == NULL , "Si se pide buscar elemento de arbol sin elementos, se devuelve NULL");
+
+  arbol_destruir(abb);
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbConElementos_SiSeBuscanElementosQueEstanEnElAbb_SeDevuelvenCorrectamenteLosMismos(){
+
+  abb_t* abb = crear_abb_generico(NULL);
+  //Conviene tener a la mano la ilustración cuando se usa el arbol genérico.
+  int* cinco_de_raiz = abb->nodo_raiz->elemento;
+  int* cero = abb->nodo_raiz->izquierda->izquierda->izquierda->elemento;
+  int* cuatro = abb->nodo_raiz->izquierda->derecha->elemento;
+  int* seis = abb->nodo_raiz->derecha->izquierda->elemento;
+  int* siete = abb->nodo_raiz->derecha->elemento;
+  int* ocho = abb->nodo_raiz->derecha->derecha->elemento;
+  
+  pa2m_afirmar( *(int*)arbol_buscar(abb, cero) == 0 , "Se buscó un elemento hoja de un arbol con elementos, el resultado es el esperado.");
+  pa2m_afirmar( *(int*)arbol_buscar(abb, seis) ==  6 , "Se buscó otra hoja distinta, el resultado es el esperado.");
+  pa2m_afirmar( *(int*)arbol_buscar(abb, cuatro) ==  4 , "Se buscó un elemento en una altura intermedia, el resultado es el esperado.");
+  pa2m_afirmar( *(int*)arbol_buscar(abb, ocho) ==  8 , "Se buscó otro elemento de altura intermedia, el resultado es el esperado.");
+  pa2m_afirmar( *(int*)arbol_buscar(abb, siete) ==  7 , "Se buscó el hijo derecho de la raíz, el resultado es el esperado.");
+  pa2m_afirmar( *(int*)arbol_buscar(abb, cinco_de_raiz) ==  5 , "Se buscó elemento que está repetido en el arbol, se devuelve el primero de ellos que se encuentra.");
+
+  arbol_destruir(abb);
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbConElementos_SiSeBuscanElementosQueNoEstanEnElAbb_SeDevuelveNull(){
+
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+  //No veo necesario usar el arbol genérico para esta prueba.
+
+  int uno = 1 , dos = 2 , elemento_no_perteneciente = 10 ; //Elementos de prueba
+  arbol_insertar(abb, &uno);
+  arbol_insertar(abb, &dos);
+
+  pa2m_afirmar( arbol_buscar(abb, &elemento_no_perteneciente) == NULL , "Al buscar elemento que no pertenece a un arbol, se devuelve NULL.");
+
+  arbol_destruir(abb);
+
+  printf("\n");
+
+}
+
+
+
+
+// BORRAR
+
+void DadoAbbVacio_SiSePideBorrarUnElemento_SeDevuelveMenosUno(){
+
+
+
+  printf("\n");
+
+}
+
+
+
+void DadoAbbConUnUnicoElemento_SiSeBorraEseElemento_ResultaEnUnAbbSinElementos(){
+
+
+
+  printf("\n");
+
+}
+
+
+
+void DadoAbbConElementos_SiSePideBorrarElementoQueNoEstaEnElAbb_SeDevuelveMenosUno(){
+ 
+
+
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbConElementos_SiSeBorranElementosQueEstanEnElAbb_SeBorranCorrectamente(){
+
+  
+
+  printf("\n");
+
+}
+
+
 /*
 
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-
-
-// 
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-
-}
-
-
-
-void Dado_Si_X(){
-  
-  printf("\n");
-
-}
-
-
-
-void Dado_Si_X(){
- 
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-  
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
 //
+
+void Dado_Si_X(){
+
+  printf("\n");
+
+}
+
+
 
 
 void Dado_Si_X(){
@@ -698,46 +795,48 @@ int main() {
     DadoComparadorNull_SiSePideCrear_NoSeCreaYSeRetornaNull();
     DadoComparadorValido_SiSePideCrearConOSinDestructor_SeCreaCorrectamenteAbb(); // ConOSin ... == Con o sin ...
 
-  //Nota de lucas:
-  //Insertar : <= a la izq
-  //Reemplazar los eliminados por el PREDECESOR inorden
   pa2m_nuevo_grupo("Pruebas de inserción");
 
     DadoAbbInexistente_SiSeIntentaInsertarElemento_NoSePuedeInsertar();
     DadoAbbSinElementos_SiSeInsertaUnElemento_SeInsertaCorrectamenteYElementoInsertadoEsRaiz();
-    DadoAbbSinElementos_SiSeInsertanVariosElementos_SeInsertanTodosYEnDondeCorresponde();
+    DadoAbbSinElementos_SiSeInsertanVariosElementos_SeInsertanTodosYComoCorresponde();
+
+  pa2m_nuevo_grupo("Pruebas de funciones de utilidad"); //Funciones de utilidad: 'arbol_raiz' y 'arbol_vacio'.
+
+    DadoAbbSinElementosOInexistente_SiSePreguntaSiEstaVacio_SeDevuelveTrue(); //Remarco este como significado de vacío (detalles de nomenclatura, aclaraciones README).
+    DadoAbbConUnElemento_SiSePreguntaSiEstaVacio_SeDevuelveFalse();
+
+    DadoAbbVacio_SiSePideElementoRaiz_SeDevuelveNull();
+    DadoAbbConElementos_SiSePideElementoRaiz_SeDevuelveEseElementoCorrectamente();
+
+  pa2m_nuevo_grupo("Pruebas de busqueda");
+
+    DadoAbbVacio_SiSePideBuscarUnElemento_SeDevuelveNull();
+    DadoAbbConElementos_SiSeBuscanElementosQueEstanEnElAbb_SeDevuelvenCorrectamenteLosMismos();
+    DadoAbbConElementos_SiSeBuscanElementosQueNoEstanEnElAbb_SeDevuelveNull();
+
+  pa2m_nuevo_grupo("Pruebas de borrado");
+    //Nota: Se reemplazan los elementos a borrar por su PREDECESOR inorden
+    DadoAbbVacio_SiSePideBorrarUnElemento_SeDevuelveMenosUno();
+    DadoAbbConUnUnicoElemento_SiSeBorraEseElemento_ResultaEnUnAbbSinElementos();
+    DadoAbbConElementos_SiSePideBorrarElementoQueNoEstaEnElAbb_SeDevuelveMenosUno();
+    DadoAbbConElementos_SiSeBorranElementosQueEstanEnElAbb_SeBorranCorrectamente();
 
   /*
 
-  pa2m_nuevo_grupo("Pruebas de inserción en vacía");
+  pa2m_nuevo_grupo("Pruebas de recorrido inorden");
 
     Dado_Si_X();
 
-  pa2m_nuevo_grupo("Pruebas de inserción en  con elementos");
-
-    Dado_Si_X();
-  
-  pa2m_nuevo_grupo("Pruebas de funciones de utilidad sobre s con elementos");
-
-    Dado_Si_X();
-
-  pa2m_nuevo_grupo("Pruebas de borrado");
-
-    Dado_Si_X();
-
-  pa2m_nuevo_grupo("Pruebas de funciones de pila");
-
-    Dado_Si_X();
-
-  pa2m_nuevo_grupo("Pruebas de funciones de cola");
+  pa2m_nuevo_grupo("Pruebas de recorrido preorden");
     
     Dado_Si_X();
 
-  pa2m_nuevo_grupo("Pruebas de iterador interno");
+  pa2m_nuevo_grupo("Pruebas de recorrido postorden");
 
     Dado_Si_X();
 
-  pa2m_nuevo_grupo("Pruebas de iterador externo");
+  pa2m_nuevo_grupo("Pruebas de iterador interno");
     
     Dado_Si_X();
 

@@ -94,8 +94,8 @@
         Un abb VACÍO puede referirse a:
             -Un abb INEXISTENTE.
             -Un abb EXISTENTE cuya raiz es NULL.
-            Denomino a este último un "ABB SIN ELEMENTOS" a lo largo de las pruebas.
-
+            Denomino a este último un "ABB SIN ELEMENTOS" a lo largo de las pruebas. Es un ABB que fue creado, pero que precisamente
+            no tiene ningun elemento guardado.
 
     ▒▒▒▒  Creación de arbol de enteros generalizado (ILUSTRACIÓN DEL RESULTADO DESEADO AL INSERTAR)  ▒▒▒▒
 

@@ -92,11 +92,53 @@ int arbol_borrar(abb_t* arbol, void* elemento){
 
 
 
+/**
+ * Intenta encontrar 'elemento_buscado' entre los nodos del arbol usando el comparador como
+ * criterio para guiar la busqueda. 
+ *  -Si logra encontrarlo, se devuelve el puntero al elemento encontrado.
+ *  -Si no lo encuentra, se devuelve NULL.
+*/
+void* busqueda_en_nodos(nodo_abb_t* nodo_actual, abb_comparador comparador, void* elemento_buscado, void* elemento_encontrado){
+
+    if(nodo_actual == NULL){
+        return NULL;
+    }
+
+    int comparacion = comparador(elemento_buscado, nodo_actual->elemento);
+
+    if(comparacion < 0){
+
+        elemento_encontrado = busqueda_en_nodos(nodo_actual->izquierda, comparador, elemento_buscado, elemento_encontrado);
+    
+    }
+    else if(comparacion > 0){
+
+        elemento_encontrado = busqueda_en_nodos(nodo_actual->derecha, comparador, elemento_buscado, elemento_encontrado);
+
+    }
+    else if(comparacion == 0){
+
+        elemento_encontrado = nodo_actual->elemento;
+
+    }
+    
+    return elemento_encontrado;
+
+}
+
 
 void* arbol_buscar(abb_t* arbol, void* elemento){
 
+    if(arbol_vacio(arbol)){
+        printf("\n\tFallo: No se puede buscar elementos de un arbol vacío.\n");
+        return NULL;
+    }
 
-    return NULL;
+    void* elemento_encontrado = NULL; 
+
+    elemento_encontrado = busqueda_en_nodos(arbol->nodo_raiz, arbol->comparador, elemento, elemento_encontrado);
+
+    return elemento_encontrado;
 
 }
 
@@ -105,8 +147,12 @@ void* arbol_buscar(abb_t* arbol, void* elemento){
 
 void* arbol_raiz(abb_t* arbol){
 
+    if(arbol_vacio(arbol)){
+        printf("\n\tFallo: No se puede obtener elemento raíz de arbol vacío.\n");
+        return NULL;
+    }
 
-    return NULL;
+    return arbol->nodo_raiz->elemento;
 
 }
 
@@ -115,8 +161,15 @@ void* arbol_raiz(abb_t* arbol){
 
 bool arbol_vacio(abb_t* arbol){
 
-
-    return false;
+    if(!arbol){
+        return true;
+    }
+    else if(arbol->nodo_raiz == NULL){
+        return true;
+    }
+    else{
+        return false;
+    }
 
 }
 
