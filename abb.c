@@ -85,6 +85,10 @@ int arbol_insertar(abb_t* arbol, void* elemento){
 
 int arbol_borrar(abb_t* arbol, void* elemento){
 
+    if(arbol_vacio(arbol)){
+        printf("\n\tFallo: No se puede borrar de un arbol vacío.\n");
+        return FALLO;
+    }
 
     return 0;
 

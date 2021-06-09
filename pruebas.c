@@ -384,7 +384,7 @@ void DadoAbbSinElementosOInexistente_SiSePreguntaSiEstaVacio_SeDevuelveTrue(){
 void DadoAbbConUnElemento_SiSePreguntaSiEstaVacio_SeDevuelveFalse(){
 
   abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
-  //No veo necesario usar el arbol genérico para esta prueba.
+  //No encuentro necesario usar el arbol genérico para esta prueba.
 
   int uno = 1 , dos = 2 ; //Elementos de prueba
   arbol_insertar(abb, &uno);
@@ -422,7 +422,7 @@ void DadoAbbVacio_SiSePideElementoRaiz_SeDevuelveNull(){
 void DadoAbbConElementos_SiSePideElementoRaiz_SeDevuelveEseElementoCorrectamente(){
 
   abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
-  //No veo necesario usar el arbol genérico para esta prueba.
+  //No encuentro necesario usar el arbol genérico para esta prueba.
 
   int uno = 1 , dos = 2 ; //Elementos de prueba
   arbol_insertar(abb, &uno);
@@ -462,7 +462,7 @@ void DadoAbbVacio_SiSePideBuscarUnElemento_SeDevuelveNull(){
 void DadoAbbConElementos_SiSeBuscanElementosQueEstanEnElAbb_SeDevuelvenCorrectamenteLosMismos(){
 
   abb_t* abb = crear_abb_generico(NULL);
-  //Conviene tener a la mano la ilustración cuando se usa el arbol genérico.
+  //Conviene tener a la mano la ilustración del arbol genérico.
   int* cinco_de_raiz = abb->nodo_raiz->elemento;
   int* cero = abb->nodo_raiz->izquierda->izquierda->izquierda->elemento;
   int* cuatro = abb->nodo_raiz->izquierda->derecha->elemento;
@@ -488,7 +488,7 @@ void DadoAbbConElementos_SiSeBuscanElementosQueEstanEnElAbb_SeDevuelvenCorrectam
 void DadoAbbConElementos_SiSeBuscanElementosQueNoEstanEnElAbb_SeDevuelveNull(){
 
   abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
-  //No veo necesario usar el arbol genérico para esta prueba.
+  //No encuentro necesario usar el arbol genérico para esta prueba.
 
   int uno = 1 , dos = 2 , elemento_no_perteneciente = 10 ; //Elementos de prueba
   arbol_insertar(abb, &uno);
@@ -509,8 +509,14 @@ void DadoAbbConElementos_SiSeBuscanElementosQueNoEstanEnElAbb_SeDevuelveNull(){
 
 void DadoAbbVacio_SiSePideBorrarUnElemento_SeDevuelveMenosUno(){
 
+  int uno = 1; //Elemento de prueba
+  //No encuentro necesario usar el arbol genérico para esta prueba.
+  pa2m_afirmar( arbol_borrar(NULL, &uno) == FALLO , "No se puede borrar elemento de un arbol inexistente.");
 
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+  pa2m_afirmar( arbol_borrar(NULL, &uno) == FALLO , "No se puede borrar elemento de un arbol sin elementos.");
 
+  arbol_destruir(abb);
   printf("\n");
 
 }
@@ -519,7 +525,15 @@ void DadoAbbVacio_SiSePideBorrarUnElemento_SeDevuelveMenosUno(){
 
 void DadoAbbConUnUnicoElemento_SiSeBorraEseElemento_ResultaEnUnAbbSinElementos(){
 
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+  int uno = 1; //Elemento de prueba
+  //No encuentro necesario usar el arbol genérico para esta prueba.
+  arbol_insertar(abb, &uno);
 
+  pa2m_afirmar( arbol_borrar(abb, &uno) == 0 , "Se borra elemento de un arbol con un elemento.");
+  pa2m_afirmar( arbol_vacio(abb) == true , "El arbol sestá vacío tras borrar.");
+
+  arbol_destruir(abb);
 
   printf("\n");
 
@@ -529,7 +543,15 @@ void DadoAbbConUnUnicoElemento_SiSeBorraEseElemento_ResultaEnUnAbbSinElementos()
 
 void DadoAbbConElementos_SiSePideBorrarElementoQueNoEstaEnElAbb_SeDevuelveMenosUno(){
  
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+  int uno = 1 , dos = 2 , tres = 3; //Elementos de prueba
+  //No encuentro necesario usar el arbol genérico para esta prueba.
+  arbol_insertar(abb, &uno);
+  arbol_insertar(abb, &dos);
 
+  pa2m_afirmar( arbol_borrar(abb, &tres) == FALLO , "No se puede borrar un elemento que no pertenece a un arbol.");
+
+  arbol_destruir(abb);
 
   printf("\n");
 
@@ -539,8 +561,47 @@ void DadoAbbConElementos_SiSePideBorrarElementoQueNoEstaEnElAbb_SeDevuelveMenosU
 
 
 void DadoAbbConElementos_SiSeBorranElementosQueEstanEnElAbb_SeBorranCorrectamente(){
+  // Verificación principal de comportamiento de borrado
 
+  abb_t* abb = crear_abb_generico(NULL);
+
+  nodo_abb_t* cero = abb->nodo_raiz->izquierda->izquierda->izquierda;
+  nodo_abb_t* ocho = abb->nodo_raiz->derecha->derecha;
+  nodo_abb_t* seis = abb->nodo_raiz->derecha->izquierda;
+  nodo_abb_t* siete = abb->nodo_raiz->derecha;
+  nodo_abb_t* tres = abb->nodo_raiz->izquierda;
+  nodo_abb_t* cinco_de_raiz = abb->nodo_raiz;
+  nodo_abb_t* cuatro = abb->nodo_raiz->izquierda->derecha;
+  nodo_abb_t* uno = abb->nodo_raiz->izquierda->izquierda;
+  nodo_abb_t* cinco_repetido = abb->nodo_raiz->izquierda->derecha->derecha;
+  nodo_abb_t* nueve = abb->nodo_raiz->derecha->derecha->derecha;
+  //VER: 'Seguimiento de pruebas de borrado' en sección aclaraciones, README.txt
   
+  pa2m_afirmar( arbol_borrar(abb, cero->elemento) == 0 , "Se borra un elemento hoja de un arbol con elementos.");
+  pa2m_afirmar( uno->izquierda == NULL , "Dicha hoja es reemplazada por un nodo NULL al borrar.");
+
+
+  pa2m_afirmar( arbol_borrar(abb, ocho->elemento) == 0 , "Se borra un elemento que tenía un hijo.");
+  pa2m_afirmar( siete->derecha == nueve , "Se llena el lugar del elemento borrado con el hijo que le quedaba al mismo.");
+
+
+  pa2m_afirmar( arbol_borrar(abb, seis->elemento) == 0 , "Se borra otra hoja distinta.");
+  pa2m_afirmar( siete->izquierda == NULL , "Dicha hoja es reemplazada por un nodo NULL al borrar.");
+
+
+  pa2m_afirmar( arbol_borrar(abb, siete->elemento) == 0 , "Se borra el hijo derecho de la raíz (tenía un hijo).");
+  pa2m_afirmar( cinco_de_raiz->derecha == nueve , "Se llena el lugar del elemento borrado con el hijo que le quedaba al mismo.");
+  
+
+  pa2m_afirmar( arbol_borrar(abb, ) == 0 , ".");
+
+
+  pa2m_afirmar( arbol_borrar(abb, ) == 0 , ".");
+
+
+
+  arbol_destruir(abb);
+  printf("\n");
 
   printf("\n");
 

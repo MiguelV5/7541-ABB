@@ -126,15 +126,110 @@
             -Son sencillos de pensar para hacer las comparaciones.
 
 
-    ▒▒▒▒  Sobre  ▒▒▒▒
+    ▒▒▒▒  Sobre los elementos pasados por parametro por el usuario.  ▒▒▒▒
 
-        
+        Los datos que el usuario almacene se asumen como su responsabilidad, y en ningún momento se verifica el elemento
+        que requiera insertar.
+        Esto conlleva a que la destrucción de elementos depende
+        exclusivamente de si el usuario brinda un destructor o no.
+        En caso de brindarlo, tampoco se hacen verificaciones sobre
+        dicha función y simplemente se aplica a cada elemento al
+        necesitar borrarlo, o al destruir el arbol.
 
 
-    ▒▒▒▒  Sobre  ▒▒▒▒
+    ▒▒▒▒  Seguimiento de pruebas de borrado  ▒▒▒▒
 
-        
+        Se ilustra paso a paso los borrados realizados con su
+        resultado esperado (empezando con el arbol genérico).
 
+                                ______(5)______
+                               /               \
+                           __(3)__           __(7)__
+                          /       \         /       \
+                     __(1)__      (4)     (6)       (8)
+                    /       \        \                 \
+                  (0)       (2)      (5)               (9)
+
+                Se borra el 0
+                                ______(5)______
+                               /               \
+                           __(3)__           __(7)__
+                          /       \         /       \
+                       (1)__      (4)     (6)       (8)
+                            \        \                 \
+                            (2)      (5)               (9)
+
+                Se borra el 8 [Se 'agarra' al hijo del 8 como hijo
+                del 7 y se elimina el 8]
+                                ______(5)______
+                               /               \
+                           __(3)__           __(7)__
+                          /       \         /       \
+                       (1)__      (4)     (6)       (9)
+                            \        \                 
+                            (2)      (5)               
+
+                Se borra el 6
+                                ______(5)______
+                               /               \
+                           __(3)__             (7)__
+                          /       \                 \
+                       (1)__      (4)               (9)
+                            \        \                 
+                            (2)      (5)               
+
+                Se borra el 7 [Igual que el 8]
+                                ______(5)______
+                               /               \
+                           __(3)__             (9)
+                          /       \                 
+                       (1)__      (4)               
+                            \        \                 
+                            (2)      (5)               
+                
+                Se borra el 3 [Se busca el predecesor inorden del 3,
+                que es el 2. Se intercambian entre sí y se borra el 3].
+                                ______(5)______
+                               /               \
+                           __(2)__             (9)
+                          /       \                 
+                       (1)        (4)               
+                                     \                 
+                                     (5)             
+
+                Se borra el 5 raíz [Su predecesor es el 5 repetido, se 
+                intercambian y se borra el 5 que queda abajo (ex-raíz)].
+                                ______(5)______
+                               /               \
+                           __(2)__             (9)
+                          /       \                 
+                       (1)        (4)
+                
+                Se borra el 4
+                                ______(5)______
+                               /               \
+                           __(2)               (9)
+                          /                       
+                       (1)      
+
+                Se borra el 5:
+                Su predecesor es el 2, entonces:
+                    a) Se intercambian entre sí.
+                
+                                ______(2)______
+                               /               \
+                           __(5)               (9)
+                          /                       
+                       (1)        
+                                                     
+                    b) Se vuelve al caso en el que se quiere borrar
+                    un elemento con un hijo. Se 'agarra' al hijo del 5
+                    como hijo del 2 y se borra el 5.
+
+                                ______(2)______
+                               /               \
+                             (1)               (9)
+                                               
 
     ▒▒▒▒  Sobre  ▒▒▒▒
 
