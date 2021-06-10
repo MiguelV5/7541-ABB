@@ -531,7 +531,7 @@ void DadoAbbConUnUnicoElemento_SiSeBorraEseElemento_ResultaEnUnAbbSinElementos()
   arbol_insertar(abb, &uno);
 
   pa2m_afirmar( arbol_borrar(abb, &uno) == 0 , "Se borra elemento de un arbol con un elemento.");
-  pa2m_afirmar( arbol_vacio(abb) == true , "El arbol sestá vacío tras borrar.");
+  pa2m_afirmar( arbol_vacio(abb) == true , "El arbol está vacío tras borrar.");
 
   arbol_destruir(abb);
 
@@ -570,6 +570,7 @@ void DadoAbbConElementos_SiSeBorranElementosQueEstanEnElAbb_SeBorranCorrectament
   nodo_abb_t* seis = abb->nodo_raiz->derecha->izquierda;
   nodo_abb_t* siete = abb->nodo_raiz->derecha;
   nodo_abb_t* tres = abb->nodo_raiz->izquierda;
+  nodo_abb_t* dos = abb->nodo_raiz->izquierda->izquierda->derecha;
   nodo_abb_t* cinco_de_raiz = abb->nodo_raiz;
   nodo_abb_t* cuatro = abb->nodo_raiz->izquierda->derecha;
   nodo_abb_t* uno = abb->nodo_raiz->izquierda->izquierda;
@@ -593,113 +594,140 @@ void DadoAbbConElementos_SiSeBorranElementosQueEstanEnElAbb_SeBorranCorrectament
   pa2m_afirmar( cinco_de_raiz->derecha == nueve , "Se llena el lugar del elemento borrado con el hijo que le quedaba al mismo.");
   
 
-  pa2m_afirmar( arbol_borrar(abb, ) == 0 , ".");
+  pa2m_afirmar( arbol_borrar(abb, tres->elemento) == 0 , "Se borra un elemento con dos hijos.");
+  pa2m_afirmar( cinco_de_raiz->izquierda == dos  , "En la posición del borrado ahora está su predecesor inorden.");
+  pa2m_afirmar( (dos->izquierda == uno) && (dos->derecha == cuatro)  , "Dicho predecesor ahora tiene por hijos a los que le correspondan de donde se borró.");
 
 
-  pa2m_afirmar( arbol_borrar(abb, ) == 0 , ".");
+  pa2m_afirmar( arbol_borrar(abb, cinco_de_raiz->elemento) == 0 , "Se borra la raíz del arbol (tenía dos hijos).");
+  pa2m_afirmar( abb->nodo_raiz == cinco_repetido  , "En la posición del borrado ahora está su predecesor inorden.");
+  pa2m_afirmar( (cinco_repetido->izquierda == dos) && (cinco_repetido->derecha == nueve)  , "Dicho predecesor ahora tiene por hijos a los que le correspondan de donde se borró.");
 
 
+  pa2m_afirmar( arbol_borrar(abb, cuatro->elemento) == 0 , "Se borra otra hoja distinta.");
+  pa2m_afirmar( dos->derecha == NULL , "Dicha hoja es reemplazada por un nodo NULL al borrar.");
+
+
+  pa2m_afirmar( arbol_borrar(abb, cinco_repetido->elemento) == 0 , "Se borra la raíz nueva cuyo predecesor es justo su hijo izquierdo.");
+  pa2m_afirmar( abb->nodo_raiz == dos , "La raíz resultante tras borrar es dicho hijo izquierdo.");
+  pa2m_afirmar( (dos->izquierda == uno) && (dos->derecha == nueve)  , "Dicho predecesor ahora tiene por hijos a los que le correspondan de donde se borró.");
 
   arbol_destruir(abb);
-  printf("\n");
 
   printf("\n");
 
 }
+
+
+
+
+// RECORRIDO INORDEN
+
+void DadoAlgunParametroInvalido_SiSeRecorreInorden_CantidadDevueltaEsCero(){
+
+
+
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorreInorden_ArrayResultanteEsElAdecuado(){
+
+  
+  
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorreInorden_ArrayResultanteEsElAdecuado(){
+
+  
+  
+  printf("\n");
+
+}
+
 
 
 /*
 
+// RECORRIDO PREORDEN
+
+void DadoAlgunParametroInvalido_SiSeRecorrePreorden_CantidadDevueltaEsCero(){
+
+
+
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado(){
+
+  
+  
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado(){
+
+  
+  
+  printf("\n");
+
+}
+
+
+
+
+// RECORRIDO POSTORDEN
+
+void DadoAlgunParametroInvalido_SiSeRecorrePostorden_CantidadDevueltaEsCero(){
+
+
+
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado(){
+
+  
+  
+  printf("\n");
+
+}
+
+
+
+
+void DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado(){
+
+  
+  
+  printf("\n");
+
+}
+
+
+
+
 //
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-}
-
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-
-}
-
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-// 
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
 
 void Dado_Si_X(){
 
@@ -883,19 +911,27 @@ int main() {
     DadoAbbConElementos_SiSePideBorrarElementoQueNoEstaEnElAbb_SeDevuelveMenosUno();
     DadoAbbConElementos_SiSeBorranElementosQueEstanEnElAbb_SeBorranCorrectamente();
 
-  /*
-
   pa2m_nuevo_grupo("Pruebas de recorrido inorden");
 
-    Dado_Si_X();
+    DadoAlgunParametroInvalido_SiSeRecorreInorden_CantidadDevueltaEsCero(); //Parametro inválido == arbol o array inexistentes / tamaño del array nulo.
+    DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorreInorden_ArrayResultanteEsElAdecuado();
+    DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorreInorden_ArrayResultanteEsElAdecuado();
+    //DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorreInorden_CantidadDevueltaEsLaCantidadDeElementosDelAbb(); luego hacer afirmaciones de estos dos en sus pruebas respectivas.
+    //DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorreInorden_CantidadDevueltaEsIgualAEseTamanio();
+
+  /*
 
   pa2m_nuevo_grupo("Pruebas de recorrido preorden");
     
-    Dado_Si_X();
+    DadoAlgunParametroInvalido_SiSeRecorrePreorden_CantidadDevueltaEsCero();
+    DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado();
+    DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado();
 
   pa2m_nuevo_grupo("Pruebas de recorrido postorden");
 
-    Dado_Si_X();
+    DadoAlgunParametroInvalido_SiSeRecorrePostorden_CantidadDevueltaEsCero();
+    DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado();
+    DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado();
 
   pa2m_nuevo_grupo("Pruebas de iterador interno");
     

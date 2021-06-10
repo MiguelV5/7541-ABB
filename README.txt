@@ -109,11 +109,11 @@
                           /       \         /       \
                      __(1)__      (4)     (6)       (8)
                     /       \        \                 \
-                  (0)       (2)      (5)               (9)
+                  (0)       (2)      (5*)              (9)
 
         El orden tomado sirve para verificar comportamiento de inserción
         a izquierda o derecha según corresponda con lo explicado en la
-        introducción teórica. Además se verifica comportamiento de inserción de un elemento repetido (el 5).
+        introducción teórica. Además se verifica comportamiento de inserción de un elemento repetido (el 5*).
 
         EN GENERAL para el resto de las pruebas se usará este arbol
         como referencia a menos de que se indique lo contrario.
@@ -141,6 +141,9 @@
 
         Se ilustra paso a paso los borrados realizados con su
         resultado esperado (empezando con el arbol genérico).
+        (NOTA: Este es el resultado esperado, NO es el funcionamiento
+        de la implementación realizada. Esto es únicamente para hacer
+        un seguimiento "a ciegas", como si no se conociera la implementación).
 
                                 ______(5)______
                                /               \
@@ -148,7 +151,7 @@
                           /       \         /       \
                      __(1)__      (4)     (6)       (8)
                     /       \        \                 \
-                  (0)       (2)      (5)               (9)
+                  (0)       (2)      (5*)              (9)
 
                 Se borra el 0
                                 ______(5)______
@@ -157,7 +160,7 @@
                           /       \         /       \
                        (1)__      (4)     (6)       (8)
                             \        \                 \
-                            (2)      (5)               (9)
+                            (2)      (5*)              (9)
 
                 Se borra el 8 [Se 'agarra' al hijo del 8 como hijo
                 del 7 y se elimina el 8]
@@ -167,7 +170,7 @@
                           /       \         /       \
                        (1)__      (4)     (6)       (9)
                             \        \                 
-                            (2)      (5)               
+                            (2)      (5*)               
 
                 Se borra el 6
                                 ______(5)______
@@ -176,7 +179,7 @@
                           /       \                 \
                        (1)__      (4)               (9)
                             \        \                 
-                            (2)      (5)               
+                            (2)      (5*)               
 
                 Se borra el 7 [Igual que el 8]
                                 ______(5)______
@@ -185,7 +188,7 @@
                           /       \                 
                        (1)__      (4)               
                             \        \                 
-                            (2)      (5)               
+                            (2)      (5*)               
                 
                 Se borra el 3 [Se busca el predecesor inorden del 3,
                 que es el 2. Se intercambian entre sí y se borra el 3].
@@ -195,36 +198,36 @@
                           /       \                 
                        (1)        (4)               
                                      \                 
-                                     (5)             
+                                     (5*)             
 
                 Se borra el 5 raíz [Su predecesor es el 5 repetido, se 
                 intercambian y se borra el 5 que queda abajo (ex-raíz)].
-                                ______(5)______
-                               /               \
-                           __(2)__             (9)
+                                ______(5*)______
+                               /                \
+                           __(2)__              (9)
                           /       \                 
                        (1)        (4)
                 
                 Se borra el 4
-                                ______(5)______
-                               /               \
-                           __(2)               (9)
+                                ______(5*)______
+                               /                \
+                           __(2)                (9)
                           /                       
                        (1)      
 
-                Se borra el 5:
+                Se borra el 5*:
                 Su predecesor es el 2, entonces:
                     a) Se intercambian entre sí.
                 
                                 ______(2)______
                                /               \
-                           __(5)               (9)
+                           __(5*)              (9)
                           /                       
                        (1)        
                                                      
                     b) Se vuelve al caso en el que se quiere borrar
-                    un elemento con un hijo. Se 'agarra' al hijo del 5
-                    como hijo del 2 y se borra el 5.
+                    un elemento con un hijo. Se 'agarra' al hijo del 5*
+                    como hijo del 2 y se borra el 5*.
 
                                 ______(2)______
                                /               \

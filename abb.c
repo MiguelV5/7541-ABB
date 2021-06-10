@@ -6,6 +6,19 @@
 
 
 
+/**
+ * Destruye un elemento (en caso de tener destructor) y hace free del nodo que lo contenía.
+*/
+void aniquilar_nodo(nodo_abb_t* nodo, abb_liberar_elemento destructor){
+
+    if(destructor != NULL){
+        destructor(nodo->elemento);
+    }
+    free(nodo);
+
+}
+
+
 abb_t* arbol_crear(abb_comparador comparador, abb_liberar_elemento destructor){
 
     if(!comparador){
@@ -68,10 +81,10 @@ int arbol_insertar(abb_t* arbol, void* elemento){
         return FALLO;
     }
 
-    nodo_abb_t* nodo_fue_insertado = insercion_de_nodo(arbol->nodo_raiz , arbol->comparador, elemento);
+    nodo_abb_t* raiz_tras_insercion = insercion_de_nodo(arbol->nodo_raiz , arbol->comparador, elemento);
 
-    if(nodo_fue_insertado != NULL){
-        arbol->nodo_raiz = nodo_fue_insertado;
+    if(raiz_tras_insercion != NULL){
+        arbol->nodo_raiz = raiz_tras_insercion;
         return 0;
     }
     else{
@@ -83,6 +96,94 @@ int arbol_insertar(abb_t* arbol, void* elemento){
 
 
 
+/**
+ * Saca del sub-arbol izquierdo al nodo más derecho que se tenga.
+ * (Por ende requiere que, en su primer llamado, se le pase la raíz de dicho sub-arbol como nodo_actual)
+ * Ese 'nodo más derecho' se guarda como predecesor.
+ * Al finalizar TODOS los retornos recursivos se devuelve la raíz del sub-arbol.
+ * (Notar que si no existía el sub-arbol, esa raíz tampoco, por lo tanto se devuelve NULL).
+*/
+nodo_abb_t* extraccion_de_predecesor(nodo_abb_t* nodo_actual, nodo_abb_t** predecesor){
+
+    if(!nodo_actual){
+        return NULL;
+    }
+
+    if(nodo_actual->derecha != NULL){
+
+        nodo_actual->derecha = extraccion_de_predecesor(nodo_actual->derecha, predecesor);
+
+    }
+    else{ //El nodo actual es el más derecho que hay ---> A lo sumo puede tener hijo izquierdo.
+
+        nodo_abb_t* posible_hijo_izquierdo = nodo_actual->izquierda; 
+        (*predecesor) = nodo_actual;
+
+        return posible_hijo_izquierdo;
+
+    }
+
+    return nodo_actual;
+
+}
+
+/**
+ * Busca el nodo al que pertenece el elemento pedido y lo borra si lo logra encontrar.
+ * Si se pasó un destructor no nulo, adicionalmente destruye el elemento antes de borrar el nodo.
+ * Puede devolver:
+ *  -NULL en caso de que el elemento no pertenecía al arbol. En tal caso el arbol no se modifica.
+ *  -El nodo del arbol sobre el cual se encuentra actualmente posicionado.
+ * Debido a esto último, al finalizar TODOS los retornos recursivos se devuelve la raíz del abb modificado.  
+*/
+nodo_abb_t* borrador_de_nodo(nodo_abb_t* nodo_actual, abb_comparador comparador, abb_liberar_elemento destructor, void* elemento, bool* se_pudo_borrar){
+
+    if(!nodo_actual){
+        (*se_pudo_borrar) = false;
+        return NULL;
+    }
+
+    int comparacion = comparador(elemento, nodo_actual->elemento);
+
+    if(comparacion < 0){
+
+        nodo_actual->izquierda = borrador_de_nodo(nodo_actual->izquierda, comparador, destructor, elemento, se_pudo_borrar);
+    
+    }
+    else if(comparacion > 0){
+
+        nodo_actual->derecha = borrador_de_nodo(nodo_actual->derecha, comparador, destructor, elemento, se_pudo_borrar);
+
+    }
+    else if(comparacion == 0){
+
+        nodo_abb_t* predecesor = NULL;
+        nodo_actual->izquierda = extraccion_de_predecesor(nodo_actual->izquierda, &predecesor);
+
+        if(predecesor == NULL){ //Si no hay predecesor, entonces el nodo a borrar no tenía hijo izq.
+            //return Reacomodar posible hijo derecho y limpiar
+            nodo_abb_t* posible_hijo_derecho = nodo_actual->derecha;//Pero podría tener hijo derecho. 
+            aniquilar_nodo(nodo_actual, destructor);
+
+            return posible_hijo_derecho;
+        
+        }
+        else{
+
+            predecesor->izquierda = nodo_actual->izquierda;
+            predecesor->derecha = nodo_actual->derecha;
+            aniquilar_nodo(nodo_actual, destructor);
+
+            return predecesor;
+
+        }
+
+    }
+
+    return nodo_actual;
+
+}
+
+
 int arbol_borrar(abb_t* arbol, void* elemento){
 
     if(arbol_vacio(arbol)){
@@ -90,9 +191,21 @@ int arbol_borrar(abb_t* arbol, void* elemento){
         return FALLO;
     }
 
-    return 0;
+    bool se_pudo_borrar = true;
+
+    nodo_abb_t* raiz_tras_borrado = borrador_de_nodo(arbol->nodo_raiz, arbol->comparador, arbol->destructor, elemento, &se_pudo_borrar);
+
+    arbol->nodo_raiz = raiz_tras_borrado;
+    
+    if(se_pudo_borrar){
+        return 0;
+    }
+    else{
+        return FALLO;
+    }
 
 }
+
 
 
 
@@ -224,13 +337,9 @@ void destruir_nodos(nodo_abb_t* nodo_actual, abb_liberar_elemento destructor){
         destruir_nodos(nodo_actual->derecha, destructor);
     }
 
-    if(destructor != NULL){
-        destructor(nodo_actual->elemento);
-    }
-    free(nodo_actual);
+    aniquilar_nodo(nodo_actual, destructor);
 
 }
-
 
 void arbol_destruir(abb_t* arbol){
 
