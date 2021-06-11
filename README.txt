@@ -111,6 +111,7 @@
                     /       \        \                 \
                   (0)       (2)      (5*)              (9)
 
+        (Orden de inserción en el arbol: 5,3,7,6,8,9,4,1,2,0,5).
         El orden tomado sirve para verificar comportamiento de inserción
         a izquierda o derecha según corresponda con lo explicado en la
         introducción teórica. Además se verifica comportamiento de inserción de un elemento repetido (el 5*).

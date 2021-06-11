@@ -293,12 +293,46 @@ bool arbol_vacio(abb_t* arbol){
 
 
 
+/**
+ * Almacena los punteros a elementos de un arbol recorriendo sus nodos de forma inorden en un vector
+ * (quedan guardados de forma ascendente).
+ * Dicho guardado se hace hasta que se llene el vector con el tamaño pedido, o hasta que se acaben
+ * los elementos del arbol.
+ * La cantidad de elementos guardados se va aumentando cada que se agrega un elemento al vector.
+*/
+void almacenar_por_nodos_inorden(nodo_abb_t* nodo_actual, void** array, size_t tamanio_array, size_t* elementos_guardados){
+    
+    if((*elementos_guardados) == tamanio_array || (nodo_actual == NULL)){
+        return;
+    }
+     
+    almacenar_por_nodos_inorden(nodo_actual->izquierda, array, tamanio_array, elementos_guardados);
+
+    if((*elementos_guardados) == tamanio_array){
+        return;
+    }
+
+    array[(*elementos_guardados)] = nodo_actual->elemento;
+    (*elementos_guardados)++;
+
+    almacenar_por_nodos_inorden(nodo_actual->derecha, array, tamanio_array, elementos_guardados);
+    
+}
+
+
 size_t arbol_recorrido_inorden(abb_t* arbol, void** array, size_t tamanio_array){
 
+    if(arbol_vacio(arbol) || !array || (tamanio_array == 0)){
+        return 0;
+    }
 
-    return 0;
+    size_t elementos_almacenados = 0;
+    almacenar_por_nodos_inorden(arbol->nodo_raiz, array, tamanio_array, &elementos_almacenados);
+
+    return elementos_almacenados;
 
 }
+
 
 
 
@@ -309,6 +343,7 @@ size_t arbol_recorrido_preorden(abb_t* arbol, void** array, size_t tamanio_array
     return 0;
 
 }
+
 
 
 

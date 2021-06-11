@@ -6,7 +6,7 @@
 
 
 #define FALLO -1
-
+#define CANTIDAD_ELEMENTOS_ABB_GENERICO 11
 
 
 //Por comodidad de lectura, "encapsulo" las funciones auxiliares de las pruebas usando entre separadores del tipo:  "// ======== // ======== //"
@@ -625,8 +625,27 @@ void DadoAbbConElementos_SiSeBorranElementosQueEstanEnElAbb_SeBorranCorrectament
 
 void DadoAlgunParametroInvalido_SiSeRecorreInorden_CantidadDevueltaEsCero(){
 
+  int* vector_de_prueba[1];
+  size_t tamanio_de_prueba = 1;
+  int uno = 1; //Elemento de prueba.
 
+  size_t cantidad_de_guardados = arbol_recorrido_inorden(NULL, (void**)vector_de_prueba, tamanio_de_prueba);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "La cantidad de elementos guardados de un arbol inexistente es cero.");
 
+  abb_t* abb = arbol_crear(comparador_de_enteros,NULL);
+
+  cantidad_de_guardados = arbol_recorrido_inorden(abb, (void**)vector_de_prueba, tamanio_de_prueba);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "La cantidad de elementos guardados de un arbol sin elementos es cero.");
+
+  arbol_insertar(abb, &uno);
+
+  cantidad_de_guardados = arbol_recorrido_inorden(abb, NULL, tamanio_de_prueba);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "No se puede guardar elementos del arbol en un vector inexistente.");
+
+  cantidad_de_guardados = arbol_recorrido_inorden(abb, (void**)vector_de_prueba, 0);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "Si el tamaño del vector pasado es cero, también son cero los elementos guardados.");
+
+  arbol_destruir(abb);
   printf("\n");
 
 }
@@ -634,10 +653,41 @@ void DadoAlgunParametroInvalido_SiSeRecorreInorden_CantidadDevueltaEsCero(){
 
 
 
-void DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorreInorden_ArrayResultanteEsElAdecuado(){
+void DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorreInorden_ArrayResultanteEsElAdecuado(){
 
+  //Nota: El Abb genérico tiene 11 enteros.
+  abb_t* abb = crear_abb_generico(NULL);
   
-  
+  int* vector_a_llenar[15];
+  size_t tamanio_a_llenar = 15;
+  bool se_lleno_en_orden = true;
+  //El orden esperado en el vector es: 0,1,2,3,4,5*,5,6,7,8,9.
+
+  size_t cantidad_de_guardados = arbol_recorrido_inorden(abb, (void**)vector_a_llenar, tamanio_a_llenar);
+  pa2m_afirmar( cantidad_de_guardados == CANTIDAD_ELEMENTOS_ABB_GENERICO , "Si el tamaño a recorrer es mayor que la cantidad de elementos del arbol, se recorre todo el arbol.");
+
+  int i = 0;
+  while(i < CANTIDAD_ELEMENTOS_ABB_GENERICO){
+    
+    //A partir del 5* repetido (que debería estar en la posición 6) no me sirve la misma comparación para ver si se guardaron todos en orden 
+    if( i < 6 ){
+      if( *vector_a_llenar[i] != i ){
+        se_lleno_en_orden = false;
+      }
+    }
+    else{
+      if( *vector_a_llenar[i] != (i-1) ){
+        se_lleno_en_orden = false;
+      }
+    }
+
+    i++;
+
+  }
+
+  pa2m_afirmar(se_lleno_en_orden, "El vector se llenó correctamente (elementos en orden ascendente).");
+
+  arbol_destruir(abb);
   printf("\n");
 
 }
@@ -645,23 +695,66 @@ void DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorreInorden_ArrayResultant
 
 
 
-void DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorreInorden_ArrayResultanteEsElAdecuado(){
+void DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorreInorden_ArrayResultanteEsElAdecuado(){
 
+  //Nota: El Abb genérico tiene 11 enteros.
+  abb_t* abb = crear_abb_generico(NULL);
   
-  
+  int* vector_a_llenar[5];
+  size_t tamanio_a_llenar = 5;
+  bool se_lleno_en_orden = true;
+  //El orden esperado en el vector es: 0,1,2,3,4.
+
+  size_t cantidad_de_guardados = arbol_recorrido_inorden(abb, (void**)vector_a_llenar, tamanio_a_llenar);
+  pa2m_afirmar( cantidad_de_guardados == tamanio_a_llenar , "Si el tamaño a recorrer es menor que la cantidad de elementos del arbol, se recorre solo esa cantidad.");
+
+  int i = 0;
+  while(i < tamanio_a_llenar){
+    //cantidad de guardados debería ser 5, es decir se guarda hasta el (4) del arbol.   
+    if( *vector_a_llenar[i] != i ){
+      se_lleno_en_orden = false;
+    }
+
+    i++;
+  }
+
+  pa2m_afirmar(se_lleno_en_orden , "El vector se llenó correctamente (elementos en orden ascendente).");
+
+  arbol_destruir(abb);
   printf("\n");
 
 }
 
 
 
-/*
+
 
 // RECORRIDO PREORDEN
 
 void DadoAlgunParametroInvalido_SiSeRecorrePreorden_CantidadDevueltaEsCero(){
 
+  int* vector_de_prueba[1];
+  size_t tamanio_de_prueba = 1;
+  int uno = 1; //Elemento de prueba.
 
+  size_t cantidad_de_guardados = arbol_recorrido_preorden(NULL, (void**)vector_de_prueba, tamanio_de_prueba);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "La cantidad de elementos guardados de un arbol inexistente es cero.");
+
+  abb_t* abb = arbol_crear(comparador_de_enteros,NULL);
+
+  cantidad_de_guardados = arbol_recorrido_preorden(abb, (void**)vector_de_prueba, tamanio_de_prueba);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "La cantidad de elementos guardados de un arbol sin elementos es cero.");
+
+  arbol_insertar(abb, &uno);
+
+  cantidad_de_guardados = arbol_recorrido_preorden(abb, NULL, tamanio_de_prueba);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "No se puede guardar elementos del arbol en un vector inexistente.");
+
+  cantidad_de_guardados = arbol_recorrido_preorden(abb, (void**)vector_de_prueba, 0);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "Si el tamaño del vector pasado es cero, también son cero los elementos guardados.");
+
+  arbol_destruir(abb);
+  printf("\n");
 
   printf("\n");
 
@@ -670,10 +763,28 @@ void DadoAlgunParametroInvalido_SiSeRecorrePreorden_CantidadDevueltaEsCero(){
 
 
 
-void DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado(){
+void DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado(){
 
+  //Nota: El Abb genérico tiene 11 enteros.
+  abb_t* abb = crear_abb_generico(NULL);
   
+  int* vector_a_llenar[15];
+  size_t tamanio_a_llenar = 15;
+  bool se_lleno_en_preorden = true;
+  //El orden esperado en el vector es: 5,3,1,0,2,4,5*,7,6,8,9.
+
+  size_t cantidad_de_guardados = arbol_recorrido_inorden(abb, (void**)vector_a_llenar, tamanio_a_llenar);
+  pa2m_afirmar( cantidad_de_guardados == CANTIDAD_ELEMENTOS_ABB_GENERICO , "Si el tamaño a recorrer es mayor que la cantidad de elementos del arbol, se recorre todo el arbol.");
+
+  if((*vector_a_llenar[0] != 5) || (*vector_a_llenar[1] != 3) || (*vector_a_llenar[2] != 1) || (*vector_a_llenar[3] != 0) || (*vector_a_llenar[4] != 2) || (*vector_a_llenar[5] != 4) || (*vector_a_llenar[6] != 5) || (*vector_a_llenar[7] != 7) || (*vector_a_llenar[8] != 6) || (*vector_a_llenar[9] != 8) || (*vector_a_llenar[10] != 9)){
   
+    se_lleno_en_preorden = false;
+  
+  }
+
+  pa2m_afirmar(se_lleno_en_preorden, "El vector se llenó correctamente (elementos en orden correspondiende al preorden).");
+
+  arbol_destruir(abb);
   printf("\n");
 
 }
@@ -681,10 +792,28 @@ void DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorrePreorden_ArrayResultan
 
 
 
-void DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado(){
+void DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado(){
 
+  //Nota: El Abb genérico tiene 11 enteros.
+  abb_t* abb = crear_abb_generico(NULL);
   
+  int* vector_a_llenar[8];
+  size_t tamanio_a_llenar = 8;
+  bool se_lleno_en_preorden = true;
+  //El orden esperado en el vector es: 5,3,1,0,2,4,5*,7.
+
+  size_t cantidad_de_guardados = arbol_recorrido_inorden(abb, (void**)vector_a_llenar, tamanio_a_llenar);
+  pa2m_afirmar( cantidad_de_guardados == tamanio_a_llenar , "Si el tamaño a recorrer es menor que la cantidad de elementos del arbol, se recorre solo dicha cantidad.");
+
+  if((*vector_a_llenar[0] != 5) || (*vector_a_llenar[1] != 3) || (*vector_a_llenar[2] != 1) || (*vector_a_llenar[3] != 0) || (*vector_a_llenar[4] != 2) || (*vector_a_llenar[5] != 4) || (*vector_a_llenar[6] != 5) || (*vector_a_llenar[7] != 7)){
   
+    se_lleno_en_preorden = false;
+  
+  }
+
+  pa2m_afirmar(se_lleno_en_preorden, "El vector se llenó correctamente (elementos en orden correspondiende al preorden).");
+
+  arbol_destruir(abb);
   printf("\n");
 
 }
@@ -696,7 +825,28 @@ void DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorrePreorden_ArrayResultante
 
 void DadoAlgunParametroInvalido_SiSeRecorrePostorden_CantidadDevueltaEsCero(){
 
+  int* vector_de_prueba[1];
+  size_t tamanio_de_prueba = 1;
+  int uno = 1; //Elemento de prueba.
 
+  size_t cantidad_de_guardados = arbol_recorrido_postorden(NULL, (void**)vector_de_prueba, tamanio_de_prueba);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "La cantidad de elementos guardados de un arbol inexistente es cero.");
+
+  abb_t* abb = arbol_crear(comparador_de_enteros,NULL);
+
+  cantidad_de_guardados = arbol_recorrido_postorden(abb, (void**)vector_de_prueba, tamanio_de_prueba);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "La cantidad de elementos guardados de un arbol sin elementos es cero.");
+
+  arbol_insertar(abb, &uno);
+
+  cantidad_de_guardados = arbol_recorrido_postorden(abb, NULL, tamanio_de_prueba);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "No se puede guardar elementos del arbol en un vector inexistente.");
+
+  cantidad_de_guardados = arbol_recorrido_postorden(abb, (void**)vector_de_prueba, 0);
+  pa2m_afirmar( cantidad_de_guardados == 0 , "Si el tamaño del vector pasado es cero, también son cero los elementos guardados.");
+
+  arbol_destruir(abb);
+  printf("\n");
 
   printf("\n");
 
@@ -705,7 +855,7 @@ void DadoAlgunParametroInvalido_SiSeRecorrePostorden_CantidadDevueltaEsCero(){
 
 
 
-void DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado(){
+void DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado(){
 
   
   
@@ -716,7 +866,7 @@ void DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorrePostorden_ArrayResulta
 
 
 
-void DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado(){
+void DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado(){
 
   
   
@@ -725,7 +875,7 @@ void DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorrePostorden_ArrayResultant
 }
 
 
-
+/*
 
 //
 
@@ -914,24 +1064,24 @@ int main() {
   pa2m_nuevo_grupo("Pruebas de recorrido inorden");
 
     DadoAlgunParametroInvalido_SiSeRecorreInorden_CantidadDevueltaEsCero(); //Parametro inválido == arbol o array inexistentes / tamaño del array nulo.
-    DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorreInorden_ArrayResultanteEsElAdecuado();
-    DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorreInorden_ArrayResultanteEsElAdecuado();
-    //DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorreInorden_CantidadDevueltaEsLaCantidadDeElementosDelAbb(); luego hacer afirmaciones de estos dos en sus pruebas respectivas.
-    //DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorreInorden_CantidadDevueltaEsIgualAEseTamanio();
+    DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorreInorden_ArrayResultanteEsElAdecuado();
+    DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorreInorden_ArrayResultanteEsElAdecuado();
 
-  /*
+  
 
   pa2m_nuevo_grupo("Pruebas de recorrido preorden");
     
     DadoAlgunParametroInvalido_SiSeRecorrePreorden_CantidadDevueltaEsCero();
-    DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado();
-    DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado();
+    DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado();
+    DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado();
+
+  /*
 
   pa2m_nuevo_grupo("Pruebas de recorrido postorden");
 
     DadoAlgunParametroInvalido_SiSeRecorrePostorden_CantidadDevueltaEsCero();
-    DadoAbbDeMenosElementosQueElTamanioPedido_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado();
-    DadoAbbDeMasElementosQueElTamanioPedido_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado();
+    DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado();
+    DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado();
 
   pa2m_nuevo_grupo("Pruebas de iterador interno");
     
