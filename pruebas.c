@@ -44,6 +44,7 @@ int comparador_de_enteros(void* elemento_1 , void* elemento_2){
  * Funcion auxiliar.
  * Crea un arbol de enteros, se usará de forma generalizada para las pruebas.
  * Más específicamente, crea el arbol ilustrado y explicado en sección ACLARACIONES del README.txt
+ * El parámetro puede venir NULL si no se necesita verificar que se insertaron todos los elementos.
 */
 abb_t* crear_abb_generico(bool* todos_se_insertaron){
 
@@ -756,8 +757,6 @@ void DadoAlgunParametroInvalido_SiSeRecorrePreorden_CantidadDevueltaEsCero(){
   arbol_destruir(abb);
   printf("\n");
 
-  printf("\n");
-
 }
 
 
@@ -773,7 +772,7 @@ void DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorrePreorden_ArrayResul
   bool se_lleno_en_preorden = true;
   //El orden esperado en el vector es: 5,3,1,0,2,4,5*,7,6,8,9.
 
-  size_t cantidad_de_guardados = arbol_recorrido_inorden(abb, (void**)vector_a_llenar, tamanio_a_llenar);
+  size_t cantidad_de_guardados = arbol_recorrido_preorden(abb, (void**)vector_a_llenar, tamanio_a_llenar);
   pa2m_afirmar( cantidad_de_guardados == CANTIDAD_ELEMENTOS_ABB_GENERICO , "Si el tamaño a recorrer es mayor que la cantidad de elementos del arbol, se recorre todo el arbol.");
 
   if((*vector_a_llenar[0] != 5) || (*vector_a_llenar[1] != 3) || (*vector_a_llenar[2] != 1) || (*vector_a_llenar[3] != 0) || (*vector_a_llenar[4] != 2) || (*vector_a_llenar[5] != 4) || (*vector_a_llenar[6] != 5) || (*vector_a_llenar[7] != 7) || (*vector_a_llenar[8] != 6) || (*vector_a_llenar[9] != 8) || (*vector_a_llenar[10] != 9)){
@@ -802,7 +801,7 @@ void DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorrePreorden_ArrayResul
   bool se_lleno_en_preorden = true;
   //El orden esperado en el vector es: 5,3,1,0,2,4,5*,7.
 
-  size_t cantidad_de_guardados = arbol_recorrido_inorden(abb, (void**)vector_a_llenar, tamanio_a_llenar);
+  size_t cantidad_de_guardados = arbol_recorrido_preorden(abb, (void**)vector_a_llenar, tamanio_a_llenar);
   pa2m_afirmar( cantidad_de_guardados == tamanio_a_llenar , "Si el tamaño a recorrer es menor que la cantidad de elementos del arbol, se recorre solo dicha cantidad.");
 
   if((*vector_a_llenar[0] != 5) || (*vector_a_llenar[1] != 3) || (*vector_a_llenar[2] != 1) || (*vector_a_llenar[3] != 0) || (*vector_a_llenar[4] != 2) || (*vector_a_llenar[5] != 4) || (*vector_a_llenar[6] != 5) || (*vector_a_llenar[7] != 7)){
@@ -848,8 +847,6 @@ void DadoAlgunParametroInvalido_SiSeRecorrePostorden_CantidadDevueltaEsCero(){
   arbol_destruir(abb);
   printf("\n");
 
-  printf("\n");
-
 }
 
 
@@ -857,8 +854,26 @@ void DadoAlgunParametroInvalido_SiSeRecorrePostorden_CantidadDevueltaEsCero(){
 
 void DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado(){
 
+  //Nota: El Abb genérico tiene 11 enteros.
+  abb_t* abb = crear_abb_generico(NULL);
   
+  int* vector_a_llenar[15];
+  size_t tamanio_a_llenar = 15;
+  bool se_lleno_en_postorden = true;
+  //El orden esperado en el vector es: 0,2,1,5*,4,3,6,9,8,7,5.
+
+  size_t cantidad_de_guardados = arbol_recorrido_postorden(abb, (void**)vector_a_llenar, tamanio_a_llenar);
+  pa2m_afirmar( cantidad_de_guardados == CANTIDAD_ELEMENTOS_ABB_GENERICO , "Si el tamaño a recorrer es mayor que la cantidad de elementos del arbol, se recorre todo el arbol.");
+
+  if((*vector_a_llenar[0] != 0) || (*vector_a_llenar[1] != 2) || (*vector_a_llenar[2] != 1) || (*vector_a_llenar[3] != 5) || (*vector_a_llenar[4] != 4) || (*vector_a_llenar[5] != 3) || (*vector_a_llenar[6] != 6) || (*vector_a_llenar[7] != 9) || (*vector_a_llenar[8] != 8) || (*vector_a_llenar[9] != 7) || (*vector_a_llenar[10] != 5)){
   
+    se_lleno_en_postorden = false;
+  
+  }
+
+  pa2m_afirmar(se_lleno_en_postorden, "El vector se llenó correctamente (elementos en orden correspondiende al postorden).");
+
+  arbol_destruir(abb);
   printf("\n");
 
 }
@@ -868,161 +883,298 @@ void DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorrePostorden_ArrayResu
 
 void DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado(){
 
+  //Nota: El Abb genérico tiene 11 enteros.
+  abb_t* abb = crear_abb_generico(NULL);
   
+  int* vector_a_llenar[4];
+  size_t tamanio_a_llenar = 4;
+  bool se_lleno_en_postorden = true;
+  //El orden esperado en el vector es: 0,2,1,5*.
+
+  size_t cantidad_de_guardados = arbol_recorrido_postorden(abb, (void**)vector_a_llenar, tamanio_a_llenar);
+  pa2m_afirmar( cantidad_de_guardados == tamanio_a_llenar , "Si el tamaño a recorrer es menor que la cantidad de elementos del arbol, se recorre solo dicha cantidad.");
+
+  if((*vector_a_llenar[0] != 0) || (*vector_a_llenar[1] != 2) || (*vector_a_llenar[2] != 1) || (*vector_a_llenar[3] != 5)){
   
-  printf("\n");
-
-}
-
-
-/*
-
-//
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-
-// 
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-void Dado_Si_X(){
-
-  printf("\n");
-
-}
-
-
-
-
-// ITERADOR INTERNO
-
-
-bool aumentar_entero(void* entero_a_sumar, void* aumento){
-
-
-
-}
-
-
-
-void Dado_Si_X(){
- 
-  printf("\n");
-
-}
-
-
-
-
-
-void Dado_Si_X(){
+    se_lleno_en_postorden = false;
   
+  }
+
+  pa2m_afirmar(se_lleno_en_postorden, "El vector se llenó correctamente (elementos en orden correspondiende al postorden).");
+
+  arbol_destruir(abb);
   printf("\n");
 
 }
 
 
 
+// ITERADOR INTERNO (EN GENERAL)
 
 
-void Dado_Si_X(){
-  
-  printf("\n");
-
-}
+// ========================================================= // ========================================================= //
 
 
+/**
+ * Función auxiliar para iterador interno.
+ * Disminuye el valor del entero recibido con el sustraendo.
+ * Devuelve true si se quiere DETENER la iteración cuando se pase al iterador interno,
+ * false en caso contrario.
 */
+bool sustractor_de_enteros_CON_corte(void* entero, void* sustraendo){
+
+  int* _entero = entero;
+  int* _sustraendo = sustraendo;
+  
+  if((*_entero != 4)){ //Valor de corte arbitrario, para probar.
+    (*_entero) -= (*_sustraendo);
+    return false;
+  }
+  else{
+    (*_entero) -= (*_sustraendo);
+    return true;
+  }
+
+}
+
+/**
+ * Función auxiliar para iterador interno.
+ * Disminuye el valor del entero recibido con el sustraendo.
+ * Siempre devuelve false. No corta al iterador núnca.
+*/
+bool sustractor_de_enteros_SIN_corte(void* entero, void* sustraendo){
+
+  int* _entero = entero;
+  int* _sustraendo = sustraendo;
+  
+  (*_entero) -= (*_sustraendo);
+  return false;
+
+}
+
+// ========================================================= // ========================================================= //
+
+
+void  DadoAlgunParametroInvalido_SiSeAplicaIterador_CantidadDeIteradosEsCero(){
+
+  int sumando = 1;
+
+  pa2m_afirmar( abb_con_cada_elemento(NULL, ABB_RECORRER_INORDEN, sustractor_de_enteros_SIN_corte, &sumando) == 0 , "No se puede usar iterador interno sobre un arbol inexistente.");
+
+  abb_t* abb = arbol_crear(comparador_de_enteros, NULL);
+
+  pa2m_afirmar( abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, sustractor_de_enteros_SIN_corte, &sumando) == 0 , "La cantidad de iteraciones sobre un arbol sin elementos es cero.");
+
+  int uno = 1; //Elemento de prueba
+  arbol_insertar(abb, &uno);
+
+  pa2m_afirmar( abb_con_cada_elemento(abb, 20, sustractor_de_enteros_SIN_corte, &sumando) == 0 , "No se puede usar iterador interno con un tipo de recorrido inválido.");
+
+  pa2m_afirmar( abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, NULL, &sumando) == 0 , "No se puede usar iterador interno con un puntero a función NULL.");
+
+  //NO se hace revisión sobre el parámetro 'extra' ya que este es responsabilidad del usuario según lo que quiera hacer con la función pasada.
+
+  arbol_destruir(abb);
+  printf("\n");
+
+}
+
+
+
+void DadaFuncionQueNoSeCorta_SiSeAplicaIteradorConCualquierRecorrido_SeModificanTodosLosElementos(){
+  // VER: 'Resultado esperado de iterador interno para distintos recorridos' en README.txt, sección Aclaraciones.
+
+  abb_t* abb = crear_abb_generico(NULL);
+
+  // "ex-numero" porque son los que se van a modificar tras usar el iterador repetidas veces.
+  // (Con los 3 recorridos).
+  int* ex_cero = abb->nodo_raiz->izquierda->izquierda->izquierda->elemento;
+  int* ex_uno = abb->nodo_raiz->izquierda->izquierda->elemento;
+  int* ex_dos = abb->nodo_raiz->izquierda->izquierda->derecha->elemento;
+  int* ex_tres = abb->nodo_raiz->izquierda->elemento;
+  int* ex_cuatro = abb->nodo_raiz->izquierda->derecha->elemento;
+  int* ex_cinco = abb->nodo_raiz->elemento;
+  int* ex_cinco_repetido = abb->nodo_raiz->izquierda->derecha->derecha->elemento;
+  int* ex_seis = abb->nodo_raiz->derecha->izquierda->elemento;
+  int* ex_siete = abb->nodo_raiz->derecha->elemento;
+  int* ex_ocho = abb->nodo_raiz->derecha->derecha->elemento;
+  int* ex_nueve = abb->nodo_raiz->derecha->derecha->derecha->elemento;
+  int sustraendo = 1;
+
+
+  //---------REVISION INORDEN---------//
+  size_t cantidad_de_modificados_esperada = abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, sustractor_de_enteros_SIN_corte, &sustraendo);
+  pa2m_afirmar( cantidad_de_modificados_esperada == 11 , "Si la función no corta, los elementos modificados recorriendo inorden son todos los del arbol.");
+
+  bool se_modificaron_todos = true;
+
+  //Se resta uno a todos
+  if((*ex_cero != -1) || (*ex_uno != 0) || (*ex_dos != 1) || (*ex_tres != 2) || (*ex_cuatro != 3) || (*ex_cinco != 4) || (*ex_cinco_repetido != 4) || (*ex_seis != 5) || (*ex_siete != 6) || (*ex_ocho != 7) || (*ex_nueve != 8)){
+    se_modificaron_todos = false;
+  }
+
+  pa2m_afirmar( se_modificaron_todos , "Cada elemento tiene el valor esperado al modificar.");
+
+
+
+  printf("\n");
+
+
+  //---------REVISION PREORDEN---------//
+  cantidad_de_modificados_esperada = abb_con_cada_elemento(abb, ABB_RECORRER_PREORDEN, sustractor_de_enteros_SIN_corte, &sustraendo);
+  pa2m_afirmar( cantidad_de_modificados_esperada == 11 , "Si la función no corta, los elementos modificados recorriendo preorden son todos los del arbol.");
+
+  se_modificaron_todos = true;
+
+  //Se vuelve a restar uno a todos desde el valor que resultó antes.
+  if((*ex_cero != -2) || (*ex_uno != -1) || (*ex_dos != 0) || (*ex_tres != 1) || (*ex_cuatro != 2) || (*ex_cinco != 3) || (*ex_cinco_repetido != 3) || (*ex_seis != 4) || (*ex_siete != 5) || (*ex_ocho != 6) || (*ex_nueve != 7)){
+    se_modificaron_todos = false;
+  }
+
+  pa2m_afirmar( se_modificaron_todos , "Cada elemento tiene el valor esperado al modificar.");
+
+
+
+  printf("\n");
+
+
+  //---------REVISION POSTORDEN---------//
+  cantidad_de_modificados_esperada = abb_con_cada_elemento(abb, ABB_RECORRER_POSTORDEN, sustractor_de_enteros_SIN_corte, &sustraendo);
+  pa2m_afirmar( cantidad_de_modificados_esperada == 11 , "Si la función no corta, los elementos modificados recorriendo postorden son todos los del arbol.");
+
+  se_modificaron_todos = true;
+
+  //Se vuelve a restar uno a todos desde el valor que resultó antes.
+  if((*ex_cero != -3) || (*ex_uno != -2) || (*ex_dos != -1) || (*ex_tres != 0) || (*ex_cuatro != 1) || (*ex_cinco != 2) || (*ex_cinco_repetido != 2) || (*ex_seis != 3) || (*ex_siete != 4) || (*ex_ocho != 5) || (*ex_nueve != 6)){
+    se_modificaron_todos = false;
+  }
+
+  pa2m_afirmar( se_modificaron_todos , "Cada elemento tiene el valor esperado al modificar.");
+
+
+  arbol_destruir(abb);
+  printf("\n");
+
+}
+
+
+
+
+
+// ITERADOR INTERNO : INORDEN
+
+void DadaFuncionQueCortaAntesDeAcabarElAbb_SiSeAplicaIteradorInorden_ResultadosDeIteracionSonLosEsperados(){
+  // VER: 'Resultado esperado de iterador interno para distintos recorridos' en README.txt, sección Aclaraciones.
+
+  abb_t* abb = crear_abb_generico(NULL);
+  arbol_borrar(abb ,abb->nodo_raiz->elemento); //Explicación de esto también en la misma sección.
+
+  // "ex-numero" porque son los que se van a modificar tras usar el iterador.
+  int* ex_cero = abb->nodo_raiz->izquierda->izquierda->izquierda->elemento;
+  int* ex_uno = abb->nodo_raiz->izquierda->izquierda->elemento;
+  int* ex_dos = abb->nodo_raiz->izquierda->izquierda->derecha->elemento;
+  int* ex_tres = abb->nodo_raiz->izquierda->elemento;
+  int* ex_cuatro = abb->nodo_raiz->izquierda->derecha->elemento;
+
+  int* cinco = abb->nodo_raiz->elemento; //Este no debería verse modificado.
+  int sustraendo = 1;
+
+  size_t cantidad_de_modificados_esperada = abb_con_cada_elemento(abb, ABB_RECORRER_INORDEN, sustractor_de_enteros_CON_corte, &sustraendo);
+  pa2m_afirmar( cantidad_de_modificados_esperada == 5 , "La cantidad de elementos modificados tras la iteración con recorrido INORDEN es la requerida.");
+
+  bool se_modificaron_los_correctos = true;
+
+  if((*ex_cero != -1) || (*ex_uno != 0) || (*ex_dos != 1) || (*ex_tres != 2) || (*ex_cuatro != 3) ||(*cinco != 5)){
+    se_modificaron_los_correctos = false;
+  }
+
+  pa2m_afirmar( se_modificaron_los_correctos , "Solamente se modificaron los elementos esperados.");
+
+  arbol_destruir(abb);
+  printf("\n");
+
+}
+
+
+
+
+
+
+// ITERADOR INTERNO : PREORDEN
+
+void DadaFuncionQueCortaAntesDeAcabarElAbb_SiSeAplicaIteradorPreorden_ResultadosDeIteracionSonLosEsperados(){
+  // VER: 'Resultado esperado de iterador interno para distintos recorridos' en README.txt, sección Aclaraciones.
+
+  abb_t* abb = crear_abb_generico(NULL);
+  arbol_borrar(abb ,abb->nodo_raiz->elemento);
+
+  int* ex_cinco = abb->nodo_raiz->elemento;
+  int* ex_tres = abb->nodo_raiz->izquierda->elemento;
+  int* ex_uno = abb->nodo_raiz->izquierda->izquierda->elemento;
+  int* ex_cero = abb->nodo_raiz->izquierda->izquierda->izquierda->elemento;
+  int* ex_dos = abb->nodo_raiz->izquierda->izquierda->derecha->elemento;
+  int* ex_cuatro = abb->nodo_raiz->izquierda->derecha->elemento;
+
+  int sustraendo = 1;
+
+  size_t cantidad_de_modificados_esperada = abb_con_cada_elemento(abb, ABB_RECORRER_PREORDEN, sustractor_de_enteros_CON_corte, &sustraendo);
+  pa2m_afirmar( cantidad_de_modificados_esperada == 6 , "La cantidad de elementos modificados tras la iteración con recorrido PREORDEN es la requerida.");
+
+  bool se_modificaron_los_correctos = true;
+
+  if((*ex_cinco != 4) || (*ex_tres != 2) || (*ex_uno != 0) || (*ex_cero != -1) || (*ex_dos != 1) || (*ex_cuatro != 3)){
+    se_modificaron_los_correctos = false;
+  }
+
+  pa2m_afirmar( se_modificaron_los_correctos , "Solamente se modificaron los elementos esperados.");
+
+  arbol_destruir(abb);
+  printf("\n");
+
+}
+
+
+
+
+
+// ITERADOR INTERNO : POSTORDEN
+    
+void DadaFuncionQueCortaAntesDeAcabarElAbb_SiSeAplicaIteradorPostorden_ResultadosDeIteracionSonLosEsperados(){
+  // VER: 'Resultado esperado de iterador interno para distintos recorridos' en README.txt, sección Aclaraciones.
+
+  abb_t* abb = crear_abb_generico(NULL);
+  arbol_borrar(abb ,abb->nodo_raiz->elemento); 
+
+  int* ex_cero = abb->nodo_raiz->izquierda->izquierda->izquierda->elemento;
+  int* ex_dos = abb->nodo_raiz->izquierda->izquierda->derecha->elemento;
+  int* ex_uno = abb->nodo_raiz->izquierda->izquierda->elemento;
+  int* ex_cuatro = abb->nodo_raiz->izquierda->derecha->elemento;
+
+  int* tres = abb->nodo_raiz->izquierda->elemento;
+  int* cinco = abb->nodo_raiz->elemento;
+  int sustraendo = 1;
+
+  size_t cantidad_de_modificados_esperada = abb_con_cada_elemento(abb, ABB_RECORRER_POSTORDEN, sustractor_de_enteros_CON_corte, &sustraendo);
+  pa2m_afirmar( cantidad_de_modificados_esperada == 4 , "La cantidad de elementos modificados tras la iteración con recorrido POSTORDEN es la requerida");
+
+  bool se_modificaron_los_correctos = true;
+
+  if((*ex_cero != -1) || (*ex_dos != 1) || (*ex_uno != 0) || (*ex_cuatro != 3) || (*tres != 3) || (*cinco != 5)){
+    se_modificaron_los_correctos = false;
+  }
+
+  pa2m_afirmar( se_modificaron_los_correctos , "Solamente se modificaron los elementos esperados.");
+
+  arbol_destruir(abb);
+  printf("\n");
+
+}
+
+
+
+
+
+
 
 
 int main() {
@@ -1067,15 +1219,11 @@ int main() {
     DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorreInorden_ArrayResultanteEsElAdecuado();
     DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorreInorden_ArrayResultanteEsElAdecuado();
 
-  
-
   pa2m_nuevo_grupo("Pruebas de recorrido preorden");
     
     DadoAlgunParametroInvalido_SiSeRecorrePreorden_CantidadDevueltaEsCero();
     DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado();
     DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorrePreorden_ArrayResultanteEsElAdecuado();
-
-  /*
 
   pa2m_nuevo_grupo("Pruebas de recorrido postorden");
 
@@ -1083,11 +1231,25 @@ int main() {
     DadoTamanioMayorALaCantidadDeElementosDelAbb_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado();
     DadoTamanioMenorALaCantidadDeElementosDelAbb_SiSeRecorrePostorden_ArrayResultanteEsElAdecuado();
 
-  pa2m_nuevo_grupo("Pruebas de iterador interno");
+  pa2m_nuevo_grupo("Pruebas de iterador interno (en general)");
+  
+    DadoAlgunParametroInvalido_SiSeAplicaIterador_CantidadDeIteradosEsCero();//Parametro inválido == arbol o función inexistentes / identificador de recorrido que no es ni 0, ni 1, ni 2.
     
-    Dado_Si_X();
+    // VER: 'Resultado esperado de iterador interno para distintos recorridos' en README.txt, sección Aclaraciones.
+    DadaFuncionQueNoSeCorta_SiSeAplicaIteradorConCualquierRecorrido_SeModificanTodosLosElementos();
 
-  */
+  pa2m_nuevo_grupo("Pruebas de iterador interno con aplicación inorden que corta");
+    
+    DadaFuncionQueCortaAntesDeAcabarElAbb_SiSeAplicaIteradorInorden_ResultadosDeIteracionSonLosEsperados();
+  
+  pa2m_nuevo_grupo("Pruebas de iterador interno con aplicación preorden que corta");
+    
+    DadaFuncionQueCortaAntesDeAcabarElAbb_SiSeAplicaIteradorPreorden_ResultadosDeIteracionSonLosEsperados();
+
+  pa2m_nuevo_grupo("Pruebas de iterador interno con aplicación postorden que corta");
+    
+    DadaFuncionQueCortaAntesDeAcabarElAbb_SiSeAplicaIteradorPostorden_ResultadosDeIteracionSonLosEsperados();
+
 
   return pa2m_mostrar_reporte();
 

@@ -114,7 +114,7 @@ nodo_abb_t* extraccion_de_predecesor(nodo_abb_t* nodo_actual, nodo_abb_t** prede
         nodo_actual->derecha = extraccion_de_predecesor(nodo_actual->derecha, predecesor);
 
     }
-    else{ //El nodo actual es el más derecho que hay ---> A lo sumo puede tener hijo izquierdo.
+    else{ //El nodo actual es el más derecho que hay --->  A lo sumo puede tener hijo izquierdo.
 
         nodo_abb_t* posible_hijo_izquierdo = nodo_actual->izquierda; 
         (*predecesor) = nodo_actual;
@@ -129,7 +129,7 @@ nodo_abb_t* extraccion_de_predecesor(nodo_abb_t* nodo_actual, nodo_abb_t** prede
 
 /**
  * Busca el nodo al que pertenece el elemento pedido y lo borra si lo logra encontrar.
- * Si se pasó un destructor no nulo, adicionalmente destruye el elemento antes de borrar el nodo.
+ * Adicionalmente, si se pasó un destructor válido, destruye el elemento antes de borrar el nodo.
  * Puede devolver:
  *  -NULL en caso de que el elemento no pertenecía al arbol. En tal caso el arbol no se modifica.
  *  -El nodo del arbol sobre el cual se encuentra actualmente posicionado.
@@ -160,7 +160,7 @@ nodo_abb_t* borrador_de_nodo(nodo_abb_t* nodo_actual, abb_comparador comparador,
         nodo_actual->izquierda = extraccion_de_predecesor(nodo_actual->izquierda, &predecesor);
 
         if(predecesor == NULL){ //Si no hay predecesor, entonces el nodo a borrar no tenía hijo izq.
-            //return Reacomodar posible hijo derecho y limpiar
+
             nodo_abb_t* posible_hijo_derecho = nodo_actual->derecha;//Pero podría tener hijo derecho. 
             aniquilar_nodo(nodo_actual, destructor);
 
@@ -294,11 +294,11 @@ bool arbol_vacio(abb_t* arbol){
 
 
 /**
- * Almacena los punteros a elementos de un arbol recorriendo sus nodos de forma inorden en un vector
+ * Almacena los punteros a elementos de un arbol recorriendo sus nodos de forma INORDEN en un vector
  * (quedan guardados de forma ascendente).
  * Dicho guardado se hace hasta que se llene el vector con el tamaño pedido, o hasta que se acaben
  * los elementos del arbol.
- * La cantidad de elementos guardados se va aumentando cada que se agrega un elemento al vector.
+ * La cantidad de elementos guardados se va aumentando cada que se agrega un elemento al vector
 */
 void almacenar_por_nodos_inorden(nodo_abb_t* nodo_actual, void** array, size_t tamanio_array, size_t* elementos_guardados){
     
@@ -323,6 +323,7 @@ void almacenar_por_nodos_inorden(nodo_abb_t* nodo_actual, void** array, size_t t
 size_t arbol_recorrido_inorden(abb_t* arbol, void** array, size_t tamanio_array){
 
     if(arbol_vacio(arbol) || !array || (tamanio_array == 0)){
+        printf("\n\tFallo: Posible parámetro invalido al intentar recorrer inorden.\n");
         return 0;
     }
 
@@ -336,24 +337,93 @@ size_t arbol_recorrido_inorden(abb_t* arbol, void** array, size_t tamanio_array)
 
 
 
+/**
+ * Almacena los punteros a elementos de un arbol recorriendo sus nodos de forma PREORDEN en un vector.
+ * Dicho guardado se hace hasta que se llene el vector con el tamaño pedido, o hasta que se acaben
+ * los elementos del arbol.
+ * La cantidad de elementos guardados se va aumentando cada que se agrega un elemento al vector
+*/
+void almacenar_por_nodos_preorden(nodo_abb_t* nodo_actual, void** array, size_t tamanio_array, size_t* elementos_guardados){
+    
+    if((*elementos_guardados) == tamanio_array || (nodo_actual == NULL)){
+        return;
+    }
+     
+    array[(*elementos_guardados)] = nodo_actual->elemento;
+    (*elementos_guardados)++;
+
+    if((*elementos_guardados) == tamanio_array){
+        return;
+    }
+    
+    almacenar_por_nodos_preorden(nodo_actual->izquierda, array, tamanio_array, elementos_guardados);
+
+    almacenar_por_nodos_preorden(nodo_actual->derecha, array, tamanio_array, elementos_guardados);
+    
+}
+
 
 size_t arbol_recorrido_preorden(abb_t* arbol, void** array, size_t tamanio_array){
 
+    if(arbol_vacio(arbol) || !array || (tamanio_array == 0)){
+        printf("\n\tFallo: Posible parámetro invalido al intentar recorrer preorden.\n");
+        return 0;
+    }
 
-    return 0;
+    size_t elementos_almacenados = 0;
+    almacenar_por_nodos_preorden(arbol->nodo_raiz, array, tamanio_array, &elementos_almacenados);
+
+    return elementos_almacenados;
 
 }
 
 
 
+
+/**
+ * Almacena los punteros a elementos de un arbol recorriendo sus nodos de forma POSTORDEN en un vector.
+ * Dicho guardado se hace hasta que se llene el vector con el tamaño pedido, o hasta que se acaben
+ * los elementos del arbol.
+ * La cantidad de elementos guardados se va aumentando cada que se agrega un elemento al vector
+*/
+void almacenar_por_nodos_postorden(nodo_abb_t* nodo_actual, void** array, size_t tamanio_array, size_t* elementos_guardados){
+    
+    if((*elementos_guardados) == tamanio_array || (nodo_actual == NULL)){
+        return;
+    }
+     
+    almacenar_por_nodos_postorden(nodo_actual->izquierda, array, tamanio_array, elementos_guardados);
+
+    if((*elementos_guardados) == tamanio_array){
+        return;
+    }
+    
+    almacenar_por_nodos_postorden(nodo_actual->derecha, array, tamanio_array, elementos_guardados);
+
+    if((*elementos_guardados) == tamanio_array){
+        return;
+    }
+    
+    array[(*elementos_guardados)] = nodo_actual->elemento;
+    (*elementos_guardados)++;
+    
+}
 
 
 size_t arbol_recorrido_postorden(abb_t* arbol, void** array, size_t tamanio_array){
+    
+    if(arbol_vacio(arbol) || !array || (tamanio_array == 0)){
+        printf("\n\tFallo: Posible parámetro invalido al intentar recorrer postorden.\n");        
+        return 0;
+    }
 
+    size_t elementos_almacenados = 0;
+    almacenar_por_nodos_postorden(arbol->nodo_raiz, array, tamanio_array, &elementos_almacenados);
 
-    return 0;
+    return elementos_almacenados;
 
 }
+
 
 
 
@@ -364,7 +434,7 @@ size_t arbol_recorrido_postorden(abb_t* arbol, void** array, size_t tamanio_arra
 */
 void destruir_nodos(nodo_abb_t* nodo_actual, abb_liberar_elemento destructor){
 
-    if(!nodo_actual){
+    if(nodo_actual == NULL){
         return;
     }
     else if(nodo_actual != NULL){
@@ -375,6 +445,7 @@ void destruir_nodos(nodo_abb_t* nodo_actual, abb_liberar_elemento destructor){
     aniquilar_nodo(nodo_actual, destructor);
 
 }
+
 
 void arbol_destruir(abb_t* arbol){
 
@@ -391,10 +462,147 @@ void arbol_destruir(abb_t* arbol){
 
 
 
+
+/**
+ * Devuelve true si los parametros pasados al iterador interno son inválidos para usarlo, false en caso
+ * contrario.
+*/
+bool parametros_iterador_son_invalidos(abb_t* abb, int recorrido, bool (*funcion)(void*, void*)){
+    
+    if( arbol_vacio(abb) || (funcion == NULL) || ((recorrido != ABB_RECORRER_INORDEN) && (recorrido != ABB_RECORRER_PREORDEN) && (recorrido != ABB_RECORRER_POSTORDEN)) ){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+
+
+/**
+ * Aplica la función dada a cada elemento de un arbol. Dicha aplicación se realiza recorriendo INORDEN.
+ * La función se aplica mientras que devuelva false. Si devuelve true se detiene la aplicación.
+ * La cantidad de elementos modificados se aumenta en medida en que se aplica la misma.
+ * La variable 'dejar_de_aplicar' sirve para verificar que no se aplique nuevamente la función tras haber
+ * obtenido aunque sea UNA vez true por resultado anteriormente.
+*/
+void aplicar_con_cada_elemento_inorden(nodo_abb_t* nodo_actual, bool (*funcion)(void*, void*), void* extra, size_t* cantidad_modificados, bool* dejar_de_aplicar){
+    
+    if((nodo_actual == NULL) || ((*dejar_de_aplicar) == true)){
+        return;
+    }
+        
+    aplicar_con_cada_elemento_inorden(nodo_actual->izquierda, funcion, extra, cantidad_modificados, dejar_de_aplicar);
+    
+    if((*dejar_de_aplicar) == true){
+        return;
+    }
+
+    (*dejar_de_aplicar) = funcion(nodo_actual->elemento, extra);
+    (*cantidad_modificados)++;
+
+    if((*dejar_de_aplicar) == true){ //La doble verificación puede PARECER innecesaria, pero analizando como se comporta, no lo es. Más a detalle en explicación de esta función, README.txt
+        return;
+    }
+
+    aplicar_con_cada_elemento_inorden(nodo_actual->derecha, funcion, extra, cantidad_modificados, dejar_de_aplicar);
+    
+}
+
+
+/**
+ * Aplica la función dada a cada elemento de un arbol. Dicha aplicación se realiza recorriendo PREORDEN.
+ * La función se aplica mientras que devuelva false. Si devuelve true se detiene la aplicación.
+ * La cantidad de elementos modificados se aumenta en medida en que se aplica la misma.
+ * La variable 'dejar_de_aplicar' sirve para verificar que no se aplique nuevamente la función tras haber
+ * obtenido aunque sea UNA vez true por resultado anteriormente.
+*/
+void aplicar_con_cada_elemento_preorden(nodo_abb_t* nodo_actual, bool (*funcion)(void*, void*), void* extra, size_t* cantidad_modificados, bool* dejar_de_aplicar){
+    
+    if((nodo_actual == NULL) || ((*dejar_de_aplicar) == true)){
+        return;
+    }
+
+    (*dejar_de_aplicar) = funcion(nodo_actual->elemento, extra);
+    (*cantidad_modificados)++;
+
+    if((*dejar_de_aplicar) == true){ //Mismo comentario, estas últimas dos verific. son NECESARIAS.
+        return;
+    }
+        
+    aplicar_con_cada_elemento_preorden(nodo_actual->izquierda, funcion, extra, cantidad_modificados, dejar_de_aplicar);
+    
+    if((*dejar_de_aplicar) == true){
+        return;
+    }
+
+    aplicar_con_cada_elemento_preorden(nodo_actual->derecha, funcion, extra, cantidad_modificados, dejar_de_aplicar);
+    
+}
+
+
+/**
+ * Aplica la función dada a cada elemento de un arbol. Dicha aplicación se realiza recorriendo POSTORDEN.
+ * La función se aplica mientras que devuelva false. Si devuelve true se detiene la aplicación.
+ * La cantidad de elementos modificados se aumenta en medida en que se aplica la misma.
+ * La variable 'dejar_de_aplicar' sirve para verificar que no se aplique nuevamente la función tras haber
+ * obtenido aunque sea UNA vez true por resultado anteriormente.
+*/
+void aplicar_con_cada_elemento_postorden(nodo_abb_t* nodo_actual, bool (*funcion)(void*, void*), void* extra, size_t* cantidad_modificados, bool* dejar_de_aplicar){
+    
+    if((nodo_actual == NULL) || ((*dejar_de_aplicar) == true)){
+        return;
+    }
+        
+    aplicar_con_cada_elemento_postorden(nodo_actual->izquierda, funcion, extra, cantidad_modificados, dejar_de_aplicar);
+
+    if((*dejar_de_aplicar) == true){
+        return;
+    }
+
+    aplicar_con_cada_elemento_postorden(nodo_actual->derecha, funcion, extra, cantidad_modificados, dejar_de_aplicar);
+
+    if((*dejar_de_aplicar) == true){
+        return;
+    }
+
+    (*dejar_de_aplicar) = funcion(nodo_actual->elemento, extra);
+    (*cantidad_modificados)++;
+
+}
+
+
+
+
+
+
 size_t abb_con_cada_elemento(abb_t* arbol, int recorrido, bool (*funcion)(void*, void*), void* extra){
 
+    if(parametros_iterador_son_invalidos(arbol, recorrido, funcion)){
+        printf("\n\tFallo: Posible parámetro invalido al intentar usar iterador interno.\n");
+        return 0;
+    }
 
-    return 0;
+    size_t cantidad_modificados = 0;
+    bool dejar_de_aplicar = false;
+    
+    if(recorrido == ABB_RECORRER_INORDEN){
+
+        aplicar_con_cada_elemento_inorden(arbol->nodo_raiz, funcion, extra, &cantidad_modificados, &dejar_de_aplicar);
+
+    }
+    else if(recorrido == ABB_RECORRER_PREORDEN){
+
+        aplicar_con_cada_elemento_preorden(arbol->nodo_raiz, funcion, extra, &cantidad_modificados, &dejar_de_aplicar);
+
+    }
+    else if(recorrido == ABB_RECORRER_POSTORDEN){
+
+        aplicar_con_cada_elemento_postorden(arbol->nodo_raiz, funcion, extra, &cantidad_modificados, &dejar_de_aplicar);
+
+    }
+
+    return cantidad_modificados;
 
 }
 

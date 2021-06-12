@@ -58,29 +58,74 @@
 
     ▒▒▒▒  abb.c  ▒▒▒▒
 
-        ---  ---
+        --- arbol_insertar ---
+            Como la reserva de memoria del nodo nuevo puede fallar,
+            utilizo una variable auxiliar 'raiz_tras_insercion' que
+            me guarde el arbol modificado, o NULL si llegó a
+            fallar.
+            En 'insercion_de_nodo' me muevo recursivamente en el
+            arbol por medio de los nodos y el comparador.
+            En el caso en el que se tenía un arbol sin elementos,
+            lo que hace es simplemente guardar el elemento en un 
+            nodo nuevo y ese va a ser el nodo_raiz.
+            Siempre que se sale de las comparaciones se devuelve
+            el nodo_actual para que el resto del "camino" del arbol que
+            se recorrió hasta llegar a donde se insertó algo se pueda
+            "reconstruir" tal y como estaba.
+
+        --- arbol_borrar ---
+            Al contrario de la inserción, acá no me basta con verificar
+            que lo devuelto por borrador_de_nodo sea distinto de NULL
+            para decir que se pudo borrar lo pedido (ya que, si por 
+            ejemplo se borra la raíz, el que tenga ahora una raíz 
+            NULL no representa un fallo, sino un resultado correcto).
+            Entonces se tiene 'se_pudo_borrar' como auxiliar para eso.
+            La comparación para seguir el recorrido es igual a la de 
+            insertar.
+            En 'borrador_de_nodo' puedo asegurar que falló el borrado 
+            si en algun llamado recursivo el nodo_actual ya no existe,
+            porque eso quiere decir que, siguiendo el camino por donde
+            debería estar el elemento a borrar, se llegó al hijo de 
+            una hoja (o sea NULL), con lo cual ese elemento no existe
+            dentro del arbol.
+            Cuando se encuentra al elemento a borrar, se usa 
+            'extraccion_de_predecesor', que va del todo a la derecha
+            de un nodo,y el último derecho que haya lo saca.
+            Por ende se le pasa el nodo izquierdo de la
+            raíz, y así encuentra el predecesor inorden.
+            Ese predecesor a lo sumo puede tener hijo izquierdo
+            (ya que, precisamente, es el más derecho que había en 
+            ese sub-arbol), pero si no lo tenía entonces ese
+            supuesto hijo izquierdo va a ser NULL.
+            Esta es razón por la cual el predecesor se guarda en
+            un puntero auxiliar que se tenga por parámetro, porque
+            quiero devolver el supuesto posible_hijo_izquierdo y 
+            así tener "reconstruido" el camino que tuve que recorrer
+            hasta el predecesor, pero efectivamente sacandolo de donde
+            estaba dejando todos los punteros en su lugar.
+            
+
+        --- arbol_buscar ---
             Se
 
-        ---  ---
+        --- arbol_recorrido_inorden ---
             Se
 
-        ---  ---
-            Se
-
-        ---  ---
-            Se
-
-        ---  ---
+        --- arbol_recorrido_preorden ---
             Se
         
-        ---  ---
+        --- arbol_recorrido_postorden ---
             Se
 
-        ---  ---
+        --- abb_con_cada_elemento (inorden) ---
             Se
 
-        ---  ---
+        --- abb_con_cada_elemento (preorden) ---
             Se
+
+        --- abb_con_cada_elemento (preorden) ---
+            Se
+
 
         
             
@@ -235,23 +280,130 @@
                              (1)               (9)
                                                
 
-    ▒▒▒▒  Sobre  ▒▒▒▒
+    ▒▒▒▒  Resultado esperado de iterador interno para distintos recorridos  ▒▒▒▒
 
+        SOBRE PRUEBAS DE ITERADOR SIN CORTE:
         
+        Como la funcion NO se corta, entonces todos los elementos del
+        arbol genérico deberían verse modificados, sin importar qué
+        recorrido se tome.
+        Teniendo en cuenta esto, en una misma prueba se hace la
+        verificación de modificación total para los 3 recorridos.
+        Los resultados tras aplicar la verificación sobre los 3 
+        recorridos son los siguientes: (en este mismo orden se aplican
+        en pruebas.c)
+
+                        ______(5)______
+                       /               \
+                   __(3)__           __(7)__
+                  /       \         /       \
+             __(1)__      (4)     (6)       (8)
+            /       \        \                 \
+          (0)       (2)      (5*)              (9)
+
+                                |
+                                | Se aplica Iter. Inorden
+                                |
+
+                        ______(4)______
+                       /               \
+                   __(2)__           __(6)__
+                  /       \         /       \
+             __(0)__      (3)     (5)       (7)
+            /       \        \                 \
+          (-1)      (1)      (4*)              (8)
+
+                                |
+                                | Se aplica Iter. Preorden
+                                |
+
+                        ______(3)______
+                       /               \
+                   __(1)__           __(5)__
+                  /       \         /       \
+             __(-1)__     (2)     (4)       (6)
+            /        \       \                 \
+          (-2)      (0)      (3*)              (7)
+
+                                |
+                                | Se aplica Iter. Postorden
+                                |
+
+                        ______(2)______
+                       /               \
+                   __(0)__           __(4)__
+                  /       \         /       \
+             __(-2)__     (1)     (3)       (5)
+            /        \       \                 \
+          (-3)      (-1)     (2*)              (6)
 
 
-    ▒▒▒▒  Sobre  ▒▒▒▒
+        SOBRE PRUEBAS DE ITERADOR CON CORTE:
 
+        NOTA: Para evitar conflicto con el elemento repetido tras
+        hacer las modificaciones, se borra el mismo antes de
+        realizar pruebas sobre el arbol.
+        (Por ejemplo: mi función a aplicar le resta uno a todos los
+        elementos hasta toparse con el numero 4. Si dejamos el
+        elemento repetido (5*), al restarle uno a la raíz en el recorrido
+        PREORDEN se obtiene que ahora la raíz es 4, pero a su izquierda
+        ahora hay un 5, por lo cual, tras restar, el arbol dejaría de
+        ser un ABB (porque se rompe la convención explicada en 
+        la intro teórica)!!!
+        Esto se puede evitar, por ejemplo, con alguna estructura aparte 
+        que almacenara elementos y claves distinguidas, pero como esto
+        es una solución a un problema del usuario, se omitirá y 
+        simplemente decido eliminar el elemento repetido (5*)).
         
+        Por medio del corte se verifican dos cosas:
+            1) Que la cantidad de elementos que se modificaron es la adecuada.
+            2) Que los elementos modificados antes del corte son los
+            correspondientes al recorrido que corresponde.
+        El corte se genera al encontrarse con el numero 4 (recién
+        después de aplicarle la función al mismo. Es decir, se aplican
+        hasta el 4 inclusive), entonces los resultados esperados para
+        los distintos recorridos son:
 
+        Iterador interno INORDEN:
+            -  Deberían modificarse solo 5 elementos.
+            -  0, 1, 2, 3, 4  pasan a ser ----->  -1, 0, 1, 2, 3
 
-    ▒▒▒▒  Sobre  ▒▒▒▒
+                   ___(5)__                            ___(5)__
+                  /       (...)                       /       (...)
+               _(3)_                                _(2)_
+              /     \             ----->           /     \
+           _(1)_    (4)                         _(0)_    (3)
+          /     \                              /     \        
+        (0)     (2)                         (-1)     (1)       
+        
+        Iterador interno PREORDEN:
+            -  Deberían modificarse solo 6 elementos.
+            -  5, 3, 1, 0, 2, 4  pasan a ser ----->  4, 2, 0, -1, 1, 3
+
+                   ___(5)__                            ___(4)__
+                  /       (...)                       /       (...)
+               _(3)_                                _(2)_
+              /     \             ----->           /     \
+           _(1)_    (4)                         _(0)_    (4)
+          /     \                              /     \        
+        (0)     (2)                         (-1)     (1)       
     
-        
+        Iterador interno POSTORDEN:
+            -  Deberían modificarse solo 4 elementos.
+            -  0, 2, 1, 4  pasan a ser ----->  -1, 1, 0, 3
+
+                   ___(5)__                            ___(5)__
+                  /       (...)                       /       (...)
+               _(3)_                                _(3)_
+              /     \             ----->           /     \
+          _(1)_     (4)                         _(0)_    (3)
+         /     \                               /     \        
+       (0)     (2)                          (-1)     (1)
 
 
-
-
-
-
-        
+        (Nota extra a la implementación del corte: Al principio
+        llegué a pensar mal el corte creyendo que NO había que
+        aplicar la función cuando se llegaba al elemento de corte.
+        Me dí cuenta de que era hasta el elemento de corte INCLUSIVE
+        recién despues de probar con Chanutrón una vez, y tras eso
+        fijandome bien en el ejemplo del minidemo).
