@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #define FALLO -1
+#define EXITO 0
 
 
 
@@ -77,7 +78,6 @@ nodo_abb_t* insercion_de_nodo(nodo_abb_t* nodo_actual, abb_comparador comparador
 int arbol_insertar(abb_t* arbol, void* elemento){
 
     if(!arbol){
-        printf("\n\tFallo: No se puede insertar en un arbol inexistente.\n");
         return FALLO;
     }
 
@@ -85,7 +85,7 @@ int arbol_insertar(abb_t* arbol, void* elemento){
 
     if(raiz_tras_insercion != NULL){
         arbol->nodo_raiz = raiz_tras_insercion;
-        return 0;
+        return EXITO;
     }
     else{
         return FALLO;
@@ -187,7 +187,6 @@ nodo_abb_t* borrador_de_nodo(nodo_abb_t* nodo_actual, abb_comparador comparador,
 int arbol_borrar(abb_t* arbol, void* elemento){
 
     if(arbol_vacio(arbol)){
-        printf("\n\tFallo: No se puede borrar de un arbol vacío.\n");
         return FALLO;
     }
 
@@ -198,7 +197,7 @@ int arbol_borrar(abb_t* arbol, void* elemento){
     arbol->nodo_raiz = raiz_tras_borrado;
     
     if(se_pudo_borrar){
-        return 0;
+        return EXITO;
     }
     else{
         return FALLO;
@@ -247,7 +246,6 @@ void* busqueda_en_nodos(nodo_abb_t* nodo_actual, abb_comparador comparador, void
 void* arbol_buscar(abb_t* arbol, void* elemento){
 
     if(arbol_vacio(arbol)){
-        printf("\n\tFallo: No se puede buscar elementos de un arbol vacío.\n");
         return NULL;
     }
 
@@ -265,7 +263,6 @@ void* arbol_buscar(abb_t* arbol, void* elemento){
 void* arbol_raiz(abb_t* arbol){
 
     if(arbol_vacio(arbol)){
-        printf("\n\tFallo: No se puede obtener elemento raíz de arbol vacío.\n");
         return NULL;
     }
 
@@ -323,7 +320,6 @@ void almacenar_por_nodos_inorden(nodo_abb_t* nodo_actual, void** array, size_t t
 size_t arbol_recorrido_inorden(abb_t* arbol, void** array, size_t tamanio_array){
 
     if(arbol_vacio(arbol) || !array || (tamanio_array == 0)){
-        printf("\n\tFallo: Posible parámetro invalido al intentar recorrer inorden.\n");
         return 0;
     }
 
@@ -366,7 +362,6 @@ void almacenar_por_nodos_preorden(nodo_abb_t* nodo_actual, void** array, size_t 
 size_t arbol_recorrido_preorden(abb_t* arbol, void** array, size_t tamanio_array){
 
     if(arbol_vacio(arbol) || !array || (tamanio_array == 0)){
-        printf("\n\tFallo: Posible parámetro invalido al intentar recorrer preorden.\n");
         return 0;
     }
 
@@ -413,7 +408,6 @@ void almacenar_por_nodos_postorden(nodo_abb_t* nodo_actual, void** array, size_t
 size_t arbol_recorrido_postorden(abb_t* arbol, void** array, size_t tamanio_array){
     
     if(arbol_vacio(arbol) || !array || (tamanio_array == 0)){
-        printf("\n\tFallo: Posible parámetro invalido al intentar recorrer postorden.\n");        
         return 0;
     }
 
@@ -450,7 +444,6 @@ void destruir_nodos(nodo_abb_t* nodo_actual, abb_liberar_elemento destructor){
 void arbol_destruir(abb_t* arbol){
 
     if(!arbol){
-        printf("\n\tFallo: No existe el arbol a destruir.\n");
         return;
     }
 
@@ -579,7 +572,6 @@ void aplicar_con_cada_elemento_postorden(nodo_abb_t* nodo_actual, bool (*funcion
 size_t abb_con_cada_elemento(abb_t* arbol, int recorrido, bool (*funcion)(void*, void*), void* extra){
 
     if(parametros_iterador_son_invalidos(arbol, recorrido, funcion)){
-        printf("\n\tFallo: Posible parámetro invalido al intentar usar iterador interno.\n");
         return 0;
     }
 
@@ -605,7 +597,3 @@ size_t abb_con_cada_elemento(abb_t* arbol, int recorrido, bool (*funcion)(void*,
     return cantidad_modificados;
 
 }
-
-
-
-
